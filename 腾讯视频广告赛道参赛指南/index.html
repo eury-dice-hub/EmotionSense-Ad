@@ -1,0 +1,3244 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EmotionSense Ad · 情绪智投</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    /* ================================
+       TENXUN STYLE — AI 腾讯视频
+       配色方案：腾讯品牌色 + 科技蓝紫渐变
+       ================================ */
+    :root {
+      --primary: #FF6600;       /* 腾讯品牌橙 */
+      --primary-dark: #E05500;
+      --primary-light: #FF8533;
+      --accent: #00A1D6;        /* 腾讯视频蓝 */
+      --accent-dark: #0078B0;
+      --green: #30D158;          /* 活泼绿 */
+      --purple: #BF5AF2;         /* 渐变紫 */
+      --yellow: #FFD60A;
+      --red: #FF453A;
+
+      --dark: #030311;
+      --dark-mid: #0A0B1E;
+      --dark-light: #12142B;
+      --surface: rgba(255,255,255,0.04);
+      --glass-bg: rgba(10,11,30,0.72);
+      --glass-border: rgba(255,255,255,0.10);
+
+      --text: #E8EAEF;
+      --text-muted: #7B8299;
+      --border: rgba(255,255,255,0.07);
+      --shadow: rgba(0,0,0,0.4);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+      color: var(--text);
+      line-height: 1.7;
+      overflow-x: hidden;
+      min-height: 100vh;
+      position: relative;
+      /* 腾讯风格背景：深色科技感 + 多层渐变 */
+      background-color: var(--dark);
+      background-image:
+        /* 顶部橙色光晕（腾讯品牌色） */
+        radial-gradient(ellipse 80% 60% at 20% -10%, rgba(255,102,0,0.18) 0%, transparent 60%),
+        /* 右侧蓝色光晕（腾讯视频蓝） */
+        radial-gradient(ellipse 60% 50% at 85% 20%, rgba(0,161,214,0.12) 0%, transparent 55%),
+        /* 左下紫色辅助 */
+        radial-gradient(ellipse 50% 40% at 5% 90%, rgba(191,90,242,0.08) 0%, transparent 50%),
+        /* 右下青色点睛 */
+        radial-gradient(ellipse 40% 35% at 95% 85%, rgba(48,209,88,0.06) 0%, transparent 50%),
+        /* 网格线 */
+        linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%, 60px 60px, 60px 60px;
+    }
+
+    /* 全局毛玻璃效果 */
+    .glass {
+      background: var(--glass-bg);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid var(--glass-border);
+    }
+
+    /* 自定义滚动条 */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, var(--primary), var(--accent));
+      border-radius: 3px;
+    }
+
+    /* 页面背景动态光斑 */
+    .bg-orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      pointer-events: none;
+      z-index: 0;
+      animation: orbFloat 12s ease-in-out infinite alternate;
+    }
+
+    .bg-orb-1 {
+      width: 500px; height: 500px;
+      top: -150px; left: -100px;
+      background: radial-gradient(circle, rgba(255,102,0,0.12) 0%, transparent 70%);
+      animation-delay: 0s;
+    }
+
+    .bg-orb-2 {
+      width: 400px; height: 400px;
+      top: 30%; right: -80px;
+      background: radial-gradient(circle, rgba(0,161,214,0.10) 0%, transparent 70%);
+      animation-delay: -4s;
+      animation-direction: alternate-reverse;
+    }
+
+    .bg-orb-3 {
+      width: 350px; height: 350px;
+      bottom: 10%; left: 30%;
+      background: radial-gradient(circle, rgba(191,90,242,0.08) 0%, transparent 70%);
+      animation-delay: -8s;
+    }
+
+    @keyframes orbFloat {
+      0%   { transform: translate(0, 0) scale(1); }
+      50%  { transform: translate(20px, -30px) scale(1.05); }
+      100% { transform: translate(-15px, 20px) scale(0.95); }
+    }
+
+    /* 浮动粒子 */
+    .bg-particles {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .bg-particles span {
+      position: absolute;
+      width: 3px; height: 3px;
+      border-radius: 50%;
+      opacity: 0.15;
+      animation: floatUp 20s infinite linear;
+    }
+
+    @keyframes floatUp {
+      0%   { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+      5%   { opacity: 0.15; }
+      95%  { opacity: 0.15; }
+      100% { transform: translateY(-100px) rotate(720deg); opacity: 0; }
+    }
+
+    /* Nav */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      padding: 0 40px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    nav .logo {
+      font-weight: 800;
+      font-size: 17px;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    nav .logo span {
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    nav .nav-links { display: flex; gap: 4px; list-style: none; }
+
+    nav .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 500;
+      padding: 5px 14px;
+      border-radius: 20px;
+      transition: all 0.25s;
+    }
+
+    nav .nav-links a:hover { color: #fff; background: rgba(255,102,0,0.18); }
+    nav .nav-links a.active { color: var(--primary); background: rgba(255,102,0,0.15); }
+
+    .content-layer { position: relative; z-index: 1; }
+
+    /* Hero */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 80px 20px 60px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* 腾讯风格：橙色+蓝色双渐变背景叠加 */
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 70% 60% at 50% 0%, rgba(255,102,0,0.15) 0%, transparent 65%),
+        radial-gradient(ellipse 50% 40% at 20% 80%, rgba(0,161,214,0.10) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 35% at 80% 20%, rgba(191,90,242,0.08) 0%, transparent 55%);
+      pointer-events: none;
+      animation: heroGlow 8s ease-in-out infinite alternate;
+    }
+
+    @keyframes heroGlow {
+      0%   { opacity: 0.7; }
+      100% { opacity: 1.0; }
+    }
+
+    /* Hero 左侧装饰线 */
+    .hero::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-image:
+        linear-gradient(rgba(255,102,0,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,102,0,0.04) 1px, transparent 1px);
+      background-size: 80px 80px;
+      pointer-events: none;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,102,0,0.12);
+      border: 1px solid rgba(255,102,0,0.28);
+      color: var(--primary-light);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 6px 16px;
+      border-radius: 24px;
+      margin-bottom: 28px;
+      letter-spacing: 1px;
+      position: relative;
+      z-index: 1;
+      backdrop-filter: blur(8px);
+    }
+
+    .hero-badge .dot {
+      width: 7px; height: 7px;
+      background: var(--primary);
+      border-radius: 50%;
+      animation: blink 2s infinite;
+      box-shadow: 0 0 8px rgba(255,102,0,0.6);
+    }
+
+    @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+    .hero h1 {
+      font-size: clamp(28px, 5vw, 62px);
+      font-weight: 900;
+      color: #fff;
+      line-height: 1.15;
+      margin-bottom: 18px;
+      max-width: 900px;
+      position: relative;
+      z-index: 1;
+      letter-spacing: -0.5px;
+    }
+
+    .hero h1 .highlight {
+      background: linear-gradient(135deg, var(--primary), var(--primary-light), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-size: 200% 200%;
+      animation: textShine 4s ease-in-out infinite;
+    }
+
+    @keyframes textShine {
+      0%,100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    .hero p {
+      font-size: clamp(13px, 1.5vw, 16px);
+      color: var(--text-muted);
+      max-width: 660px;
+      margin-bottom: 36px;
+      line-height: 1.85;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 40px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 36px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-stats .stat { text-align: center; }
+
+    .hero-stats .stat .num {
+      font-size: 28px;
+      font-weight: 900;
+      color: #fff;
+      display: block;
+      background: linear-gradient(135deg, #fff, rgba(255,255,255,0.7));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-stats .stat .label {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 500;
+      letter-spacing: 0.5px;
+    }
+
+    .hero-cta { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; position: relative; z-index: 1; }
+
+    .btn {
+      padding: 13px 28px;
+      border-radius: 50px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.3s cubic-bezier(0.16,1,0.3,1);
+      border: none;
+      font-family: inherit;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: #fff;
+      box-shadow: 0 6px 24px rgba(255,102,0,0.4), 0 0 0 1px rgba(255,102,0,0.2) inset;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 12px 36px rgba(255,102,0,0.5), 0 0 0 1px rgba(255,102,0,0.3) inset;
+    }
+
+    .btn-outline {
+      background: rgba(255,255,255,0.05);
+      color: var(--text);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(8px);
+    }
+
+    .btn-outline:hover {
+      border-color: rgba(255,102,0,0.5);
+      color: var(--primary-light);
+      background: rgba(255,102,0,0.08);
+      transform: translateY(-2px);
+    }
+
+    /* Sections */
+    section { padding: 70px 40px; max-width: 1200px; margin: 0 auto; position: relative; z-index: 1; }
+
+    .section-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--primary);
+      letter-spacing: 2px;
+      margin-bottom: 12px;
+    }
+
+    .section-tag::before {
+      content: '';
+      width: 20px; height: 2px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      border-radius: 1px;
+    }
+
+    .section-title {
+      font-size: clamp(20px, 2.8vw, 34px);
+      font-weight: 900;
+      color: #fff;
+      margin-bottom: 8px;
+      line-height: 1.2;
+      letter-spacing: -0.3px;
+    }
+
+    .section-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      max-width: 600px;
+      margin-bottom: 36px;
+      line-height: 1.85;
+    }
+
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent);
+      max-width: 1200px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Cards */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 16px;
+    }
+
+    .req-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 24px;
+      transition: all 0.35s cubic-bezier(0.16,1,0.3,1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .req-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .req-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 60% 40% at 50% 0%, rgba(255,102,0,0.06), transparent 60%);
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+    }
+
+    .req-card:hover {
+      border-color: rgba(255,102,0,0.35);
+      transform: translateY(-4px);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,102,0,0.15);
+    }
+    .req-card:hover::before { opacity: 1; }
+    .req-card:hover::after { opacity: 1; }
+
+    .req-card .req-num { font-size: 9px; font-weight: 700; color: var(--primary); letter-spacing: 1.5px; margin-bottom: 8px; }
+    .req-card .req-title { font-size: 13px; font-weight: 700; color: #fff; margin-bottom: 10px; }
+    .req-card .req-strategy { font-size: 11px; color: var(--text-muted); line-height: 1.85; }
+    .req-card .req-strategy strong { color: var(--text); }
+
+    /* ===== AI DEMO SECTION ===== */
+    #demo {
+      background: var(--glass-bg);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid var(--glass-border);
+      border-radius: 22px;
+      margin: 36px auto;
+      max-width: 1160px;
+      padding: 50px 36px;
+    }
+
+    /* API Mode Selector */
+    .api-mode-bar {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .api-mode-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+      margin-right: 6px;
+    }
+
+    .api-mode-btn {
+      padding: 7px 16px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid var(--glass-border);
+      background: rgba(255,255,255,0.04);
+      color: var(--text-muted);
+      transition: all 0.25s;
+      font-family: inherit;
+    }
+
+    .api-mode-btn:hover { border-color: rgba(255,102,0,0.5); color: var(--primary-light); background: rgba(255,102,0,0.08); }
+
+    .api-mode-btn.active {
+      background: rgba(255,102,0,0.15);
+      border-color: rgba(255,102,0,0.5);
+      color: var(--primary-light);
+      box-shadow: 0 0 12px rgba(255,102,0,0.15);
+    }
+
+    /* Model status */
+    .model-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 14px;
+      background: rgba(255,255,255,0.04);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border);
+      border-radius: 10px;
+      margin-bottom: 16px;
+      font-size: 11px;
+    }
+
+    .status-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+    .status-dot.loading { background: var(--yellow); animation: blink 0.8s infinite; }
+    .status-dot.ready { background: var(--green); }
+    .status-dot.error { background: #ff4444; }
+    .status-dot.off { background: var(--text-muted); }
+
+    .model-status .status-label { color: var(--text-muted); }
+    .model-status .status-val { color: #fff; font-weight: 600; margin-left: 4px; }
+
+    /* API Config Panel */
+    .api-config-panel {
+      background: rgba(255,255,255,0.03);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 18px;
+      margin-bottom: 18px;
+      display: none;
+    }
+
+    .api-config-panel.visible { display: block; }
+
+    .api-config-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .api-config-title .badge {
+      font-size: 9px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 10px;
+    }
+
+    .badge-cloud { background: rgba(0,161,214,0.15); color: var(--accent); }
+    .badge-local { background: rgba(48,209,88,0.15); color: var(--green); }
+
+    .config-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+
+    .config-row label {
+      font-size: 11px;
+      color: var(--text-muted);
+      width: 80px;
+      flex-shrink: 0;
+      font-weight: 500;
+    }
+
+    .config-row input {
+      flex: 1;
+      min-width: 200px;
+      padding: 9px 12px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      color: #fff;
+      font-size: 11px;
+      font-family: 'Consolas', monospace;
+      outline: none;
+      transition: border-color 0.25s;
+    }
+
+    .config-row input:focus { border-color: rgba(255,102,0,0.6); box-shadow: 0 0 0 3px rgba(255,102,0,0.08); }
+    .config-row input::placeholder { color: var(--text-muted); opacity: 0.5; }
+
+    .config-row .btn { padding: 9px 18px; font-size: 11px; }
+
+    .api-note {
+      font-size: 10px;
+      color: var(--text-muted);
+      padding: 10px 14px;
+      background: rgba(0,161,214,0.06);
+      border-radius: 8px;
+      border-left: 3px solid var(--accent);
+      line-height: 1.7;
+      margin-top: 8px;
+    }
+
+    /* Demo layout */
+    .demo-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+      align-items: start;
+    }
+
+    @media (max-width: 900px) { .demo-layout { grid-template-columns: 1fr; } }
+
+    /* Camera */
+    .camera-wrap {
+      position: relative;
+      border-radius: 16px;
+      overflow: hidden;
+      background: #000;
+      aspect-ratio: 4/3;
+      border: 1px solid var(--glass-border);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    }
+
+    .camera-wrap video,
+    .camera-wrap canvas {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .camera-wrap canvas { pointer-events: none; }
+
+    .cam-overlay {
+      position: absolute;
+      top: 10px; left: 10px;
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(10px);
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 10px;
+      color: #fff;
+      z-index: 10;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .cam-overlay .rec-dot {
+      width: 7px; height: 7px;
+      background: #ff453a;
+      border-radius: 50%;
+      animation: blink 1s infinite;
+      box-shadow: 0 0 6px rgba(255,69,58,0.8);
+    }
+
+    .cam-overlay .cam-dot { width: 7px; height: 7px; background: var(--green); border-radius: 50%; box-shadow: 0 0 6px rgba(48,209,88,0.8); }
+
+    .cam-controls { margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap; }
+
+    .cam-controls .btn { padding: 9px 18px; font-size: 11px; }
+
+    .btn-green {
+      background: rgba(48,209,88,0.12);
+      color: var(--green);
+      border: 1px solid rgba(48,209,88,0.3);
+      backdrop-filter: blur(8px);
+    }
+
+    .btn-green:hover {
+      background: rgba(48,209,88,0.22);
+      border-color: rgba(48,209,88,0.6);
+      transform: translateY(-2px);
+    }
+
+    .btn-red {
+      background: rgba(255,69,58,0.12);
+      color: var(--red);
+      border: 1px solid rgba(255,69,58,0.3);
+      backdrop-filter: blur(8px);
+    }
+
+    .btn-red:hover {
+      background: rgba(255,69,58,0.22);
+      border-color: rgba(255,69,58,0.6);
+      transform: translateY(-2px);
+    }
+
+    .btn-blue {
+      background: rgba(0,161,214,0.12);
+      color: var(--accent);
+      border: 1px solid rgba(0,161,214,0.3);
+      backdrop-filter: blur(8px);
+    }
+
+    .btn-blue:hover {
+      background: rgba(0,161,214,0.22);
+      border-color: rgba(0,161,214,0.6);
+      transform: translateY(-2px);
+    }
+
+    /* Emotion panel */
+    .emotion-panel { display: flex; flex-direction: column; gap: 14px; }
+    .emotion-panel h3 { font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 2px; }
+    .emotion-panel .sub { font-size: 11px; color: var(--text-muted); margin-bottom: 6px; }
+
+    .emotion-bars { display: flex; flex-direction: column; gap: 8px; }
+
+    .emotion-bar-row { display: flex; align-items: center; gap: 8px; }
+
+    .emotion-bar-label { width: 48px; font-size: 10px; color: var(--text-muted); font-weight: 500; flex-shrink: 0; }
+
+    .emotion-bar-track { flex: 1; height: 7px; background: rgba(255,255,255,0.05); border-radius: 4px; overflow: hidden; }
+
+    .emotion-bar-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.3s ease;
+      width: 0%;
+    }
+
+    .emotion-bar-val { width: 32px; font-size: 10px; font-weight: 700; color: #fff; text-align: right; flex-shrink: 0; }
+
+    .emotion-bar-row:nth-child(1) .emotion-bar-fill { background: linear-gradient(90deg, var(--primary), var(--primary-light)); }
+    .emotion-bar-row:nth-child(2) .emotion-bar-fill { background: linear-gradient(90deg, var(--accent), #4dcfff); }
+    .emotion-bar-row:nth-child(3) .emotion-bar-fill { background: linear-gradient(90deg, var(--green), #7eef9a); }
+    .emotion-bar-row:nth-child(4) .emotion-bar-fill { background: linear-gradient(90deg, var(--purple), #d09fff); }
+    .emotion-bar-row:nth-child(5) .emotion-bar-fill { background: linear-gradient(90deg, var(--yellow), #ffe566); }
+    .emotion-bar-row:nth-child(6) .emotion-bar-fill { background: linear-gradient(90deg, var(--red), #ff7b6e); }
+
+    /* Mood ring */
+    .mood-ring-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 10px 0 6px;
+    }
+
+    .mood-ring {
+      width: 120px; height: 120px;
+      border-radius: 50%;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: box-shadow 0.5s ease;
+    }
+
+    .mood-ring-inner {
+      width: 86px; height: 86px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.04);
+      backdrop-filter: blur(12px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border: 1.5px solid rgba(255,255,255,0.08);
+    }
+
+    .mood-ring-emoji { font-size: 26px; line-height: 1; }
+    .mood-ring-label { font-size: 10px; font-weight: 700; color: #fff; margin-top: 3px; }
+
+    .mood-ring-status { text-align: center; }
+    .mood-ring-status .status-text { font-size: 11px; font-weight: 600; color: var(--text-muted); transition: color 0.3s; }
+    .mood-ring-status .status-hint { font-size: 10px; color: var(--text-muted); opacity: 0.6; }
+
+    /* History */
+    .mood-history {
+      background: rgba(255,255,255,0.03);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 12px 14px;
+    }
+
+    .mood-history h4 {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+    }
+
+    .mood-timeline { display: flex; gap: 2px; height: 36px; align-items: flex-end; }
+
+    .mood-bar {
+      flex: 1;
+      border-radius: 2px 2px 0 0;
+      min-height: 3px;
+      transition: height 0.3s ease, background 0.3s ease;
+    }
+
+    /* Ad window */
+    .ad-window-card {
+      background: rgba(48,209,88,0.07);
+      border: 1px solid rgba(48,209,88,0.25);
+      border-radius: 12px;
+      padding: 14px;
+      margin-top: 6px;
+      display: none;
+      backdrop-filter: blur(12px);
+    }
+
+    .ad-window-card.active { display: block; }
+    .ad-window-card .ad-header { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
+    .ad-window-card .ad-badge { background: var(--green); color: #fff; font-size: 9px; font-weight: 700; padding: 2px 7px; border-radius: 10px; }
+    .ad-window-card .ad-title { font-size: 12px; font-weight: 700; color: #fff; }
+    .ad-window-card .ad-body { font-size: 11px; color: var(--text-muted); line-height: 1.7; }
+    .ad-feedback { display: flex; gap: 8px; margin-top: 10px; }
+    .ad-btn-like, .ad-btn-skip {
+      flex: 1; padding: 6px; font-size: 10px; border-radius: 6px;
+      border: 1px solid; cursor: pointer; transition: all 0.2s; font-family: inherit;
+    }
+    .ad-btn-like { background: rgba(48,209,88,0.1); border-color: rgba(48,209,88,0.4); color: #30D158; }
+    .ad-btn-skip { background: rgba(255,68,68,0.1); border-color: rgba(255,68,68,0.4); color: #FF453A; }
+    .ad-btn-like:hover { background: rgba(48,209,88,0.25); }
+    .ad-btn-skip:hover { background: rgba(255,68,68,0.25); }
+
+    /* Loading screen */
+    .loading-screen {
+      position: absolute;
+      inset: 0;
+      background: rgba(10,11,30,0.92);
+      backdrop-filter: blur(16px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      z-index: 20;
+      border-radius: 16px;
+    }
+
+    .loading-screen.hidden { display: none; }
+
+    .loading-screen .spinner {
+      width: 32px; height: 32px;
+      border-width: 2.5px; border-style: solid;
+      border-color: rgba(255,255,255,0.08);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    .loading-screen p { font-size: 11px; color: var(--text-muted); }
+    .loading-progress { width: 160px; height: 3px; background: rgba(255,255,255,0.06); border-radius: 2px; overflow: hidden; }
+    .loading-progress-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--accent)); border-radius: 2px; transition: width 0.3s; width: 0%; }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ===== DATA PANEL ===== */
+    .data-panel {
+      background: var(--glass-bg);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid var(--glass-border);
+      border-radius: 22px;
+      margin: 0 auto;
+      max-width: 1160px;
+      padding: 40px 36px;
+    }
+
+    .data-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    @media (max-width: 900px) { .data-layout { grid-template-columns: 1fr; } }
+
+    .data-card {
+      background: rgba(255,255,255,0.03);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 22px;
+      transition: all 0.3s;
+    }
+
+    .data-card:hover { border-color: rgba(255,102,0,0.2); }
+
+    .data-card h3 {
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .data-card .data-sub {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+
+    /* Log entries */
+    .log-entries {
+      max-height: 220px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .log-entry {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 8px 10px;
+      background: rgba(255,255,255,0.03);
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.05);
+      font-size: 10px;
+      transition: all 0.25s;
+    }
+
+    .log-entry:hover { border-color: rgba(255,102,0,0.25); background: rgba(255,255,255,0.05); }
+
+    .log-entry .log-time {
+      color: var(--text-muted);
+      flex-shrink: 0;
+      font-family: 'Consolas', monospace;
+      margin-top: 1px;
+    }
+
+    .log-entry .log-emoji { font-size: 14px; flex-shrink: 0; }
+
+    .log-entry .log-body { flex: 1; }
+
+    .log-entry .log-emotion {
+      font-weight: 700;
+      color: #fff;
+      margin-right: 4px;
+    }
+
+    .log-entry .log-val {
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    .log-entry .log-source {
+      font-size: 9px;
+      color: var(--text-muted);
+      background: rgba(255,255,255,0.05);
+      padding: 2px 7px;
+      border-radius: 8px;
+      flex-shrink: 0;
+    }
+
+    .log-empty {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text-muted);
+      font-size: 12px;
+      opacity: 0.5;
+    }
+
+    /* Stats grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .stat-item {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 12px;
+      text-align: center;
+      transition: all 0.25s;
+    }
+
+    .stat-item:hover { border-color: rgba(255,102,0,0.2); }
+
+    .stat-item .stat-num {
+      font-size: 22px;
+      font-weight: 900;
+      color: #fff;
+      display: block;
+    }
+
+    .stat-item .stat-num.orange { color: var(--primary); }
+    .stat-item .stat-num.blue { color: var(--accent); }
+    .stat-item .stat-num.green { color: var(--green); }
+
+    .stat-item .stat-label { font-size: 9px; color: var(--text-muted); font-weight: 500; margin-top: 2px; }
+
+    /* Chart bars */
+    .chart-bars { display: flex; flex-direction: column; gap: 8px; }
+
+    .chart-row { display: flex; align-items: center; gap: 8px; }
+
+    .chart-label { width: 40px; font-size: 10px; color: var(--text-muted); text-align: right; flex-shrink: 0; }
+
+    .chart-track { flex: 1; height: 14px; background: rgba(255,255,255,0.04); border-radius: 7px; overflow: hidden; position: relative; }
+
+    .chart-fill { height: 100%; border-radius: 7px; transition: width 0.5s ease; display: flex; align-items: center; padding-left: 8px; }
+
+    .chart-val { font-size: 9px; font-weight: 700; color: rgba(255,255,255,0.9); white-space: nowrap; }
+
+    /* DB actions */
+    .db-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+
+    .db-actions .btn { padding: 9px 16px; font-size: 11px; }
+
+    /* DB info */
+    .db-info {
+      font-size: 10px;
+      color: var(--text-muted);
+      padding: 10px 14px;
+      background: rgba(48,209,88,0.05);
+      border-radius: 10px;
+      border: 1px solid rgba(48,209,88,0.12);
+      line-height: 1.8;
+    }
+
+    .db-info strong { color: var(--green); }
+
+    /* ===== AGENT PANEL ===== */
+    .agent-panel {
+      margin-top: 24px; padding: 20px;
+      background: rgba(0,0,0,0.25); border-radius: 14px;
+      border: 1px solid rgba(255,102,0,0.2);
+    }
+    .agent-header { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+    .agent-badge {
+      background: rgba(255,102,0,0.15); color: #FF6600;
+      padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700;
+    }
+    .agent-subtitle { font-size: 11px; color: var(--text-muted); }
+    .agent-metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 14px; }
+    .agent-stat {
+      background: rgba(255,255,255,0.04); border-radius: 10px; padding: 10px 6px;
+      text-align: center; display: flex; flex-direction: column; gap: 4px;
+    }
+    .agent-stat span:last-child { font-size: 9px; color: var(--text-muted); }
+    .agent-stat-num { font-size: 18px; font-weight: 800; color: #FF6600; }
+    .q-table-viz { background: rgba(255,255,255,0.03); border-radius: 10px; padding: 12px; margin-bottom: 12px; }
+    .q-label { font-size: 10px; color: var(--text-muted); margin-bottom: 8px; }
+    .q-bars { display: flex; flex-direction: column; gap: 4px; }
+    .q-bar-row { display: flex; align-items: center; gap: 6px; font-size: 9px; }
+    .q-bar-label { width: 60px; color: var(--text-muted); text-align: right; flex-shrink: 0; }
+    .q-bar-track { flex: 1; height: 6px; background: rgba(255,255,255,0.06); border-radius: 3px; overflow: hidden; }
+    .q-bar-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, #FF6600, #FF8533); transition: width 0.3s; }
+    .agent-log { max-height: 80px; overflow-y: auto; font-size: 9px; color: var(--text-muted); }
+    .agent-log-entry { padding: 2px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+
+    /* ===== MULTIMODAL SIGNAL PANEL ===== */
+    .mm-signal-panel {
+      margin-top: 16px; padding: 20px;
+      background: rgba(0,0,0,0.25); border-radius: 14px;
+      border: 1px solid rgba(0,161,214,0.2);
+    }
+    .mm-header { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+    .mm-badge {
+      background: rgba(0,161,214,0.15); color: var(--accent);
+      padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700;
+    }
+    .mm-subtitle { font-size: 11px; color: var(--text-muted); }
+    .mm-signals { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 14px; }
+    @media (max-width: 900px) { .mm-signals { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 500px) { .mm-signals { grid-template-columns: 1fr; } }
+    .mm-sig-card {
+      background: rgba(255,255,255,0.04); border-radius: 10px; padding: 12px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .sig-icon { font-size: 20px; flex-shrink: 0; }
+    .sig-info { flex: 1; min-width: 0; }
+    .sig-name { font-size: 10px; font-weight: 700; color: #fff; }
+    .sig-desc { font-size: 8px; color: var(--text-muted); line-height: 1.5; margin-top: 2px; }
+    .sig-val { font-size: 16px; font-weight: 900; color: var(--accent); flex-shrink: 0; }
+    .sig-level { font-size: 12px; color: var(--text-muted); }
+    .mm-segment-bar { display: flex; align-items: center; gap: 10px; }
+    .seg-label { font-size: 10px; color: var(--text-muted); flex-shrink: 0; }
+    .seg-track { flex: 1; height: 8px; background: rgba(0,161,214,0.15); border-radius: 4px; overflow: hidden; display: flex; }
+    .seg-fill-low { height: 100%; background: var(--accent); transition: width 0.5s; }
+    .seg-fill-high { height: 100%; background: var(--primary); transition: width 0.5s; }
+    .seg-labels { display: flex; justify-content: space-between; width: 100%; font-size: 8px; color: var(--text-muted); flex-shrink: 0; }
+
+    /* ===== PERSONALIZE SECTION ===== */
+    #personalize {
+      background: var(--glass-bg);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid var(--glass-border);
+      border-radius: 22px;
+      margin: 36px auto;
+      max-width: 1160px;
+      padding: 50px 36px;
+    }
+    .personalize-flow {
+      display: flex; align-items: flex-start; gap: 12px;
+      margin-bottom: 32px; overflow-x: auto; padding-bottom: 8px;
+    }
+    @media (max-width: 768px) { .personalize-flow { flex-direction: column; } }
+    .pf-step {
+      flex: 1; min-width: 160px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 14px; padding: 18px 14px;
+      text-align: center;
+      transition: all 0.3s;
+    }
+    .pf-step:hover { border-color: rgba(255,102,0,0.25); transform: translateY(-2px); }
+    .pf-icon { font-size: 28px; margin-bottom: 8px; }
+    .pf-num { font-size: 9px; font-weight: 700; color: var(--text-muted); letter-spacing: 1px; margin-bottom: 6px; }
+    .pf-step h4 { font-size: 12px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+    .pf-step p { font-size: 10px; color: var(--text-muted); line-height: 1.75; }
+    .pf-arrow { font-size: 20px; color: var(--text-muted); opacity: 0.3; align-self: center; flex-shrink: 0; padding-top: 36px; }
+    @media (max-width: 768px) { .pf-arrow { display: none; } }
+    .personalize-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    @media (max-width: 768px) { .personalize-cards { grid-template-columns: 1fr; } }
+    .pcard {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 14px; padding: 20px;
+      transition: all 0.3s;
+    }
+    .pcard:hover { border-color: rgba(255,102,0,0.2); transform: translateY(-2px); }
+    .pcard-icon { font-size: 24px; margin-bottom: 10px; }
+    .pcard h4 { font-size: 13px; font-weight: 700; color: #fff; margin-bottom: 8px; }
+    .pcard p { font-size: 11px; color: var(--text-muted); line-height: 1.8; }
+
+    /* ===== STRATEGY SECTION ===== */
+    #strategy {
+      background: var(--glass-bg);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid var(--glass-border);
+      border-radius: 22px;
+      margin: 36px auto;
+      max-width: 1160px;
+      padding: 50px 36px;
+    }
+
+    .user-seg-wrapper {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      margin-bottom: 32px;
+    }
+
+    @media (max-width: 768px) { .user-seg-wrapper { grid-template-columns: 1fr; } }
+
+    .seg-card {
+      border-radius: 16px;
+      padding: 24px;
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(16px);
+      transition: all 0.35s cubic-bezier(0.16,1,0.3,1);
+    }
+
+    .seg-card.high {
+      background: linear-gradient(145deg, rgba(255,102,0,0.10), rgba(255,102,0,0.02));
+    }
+    .seg-card.low {
+      background: linear-gradient(145deg, rgba(0,161,214,0.10), rgba(0,161,214,0.02));
+    }
+
+    .seg-card:hover { transform: translateY(-3px); box-shadow: 0 12px 30px rgba(0,0,0,0.3); }
+
+    .seg-badge { display: inline-flex; align-items: center; gap: 5px; font-size: 9px; font-weight: 700; padding: 3px 9px; border-radius: 20px; margin-bottom: 12px; }
+
+    .seg-card.high .seg-badge { background: rgba(255,102,0,0.15); color: var(--primary-light); border: 1px solid rgba(255,102,0,0.2); }
+    .seg-card.low .seg-badge { background: rgba(0,161,214,0.15); color: var(--accent); border: 1px solid rgba(0,161,214,0.2); }
+
+    .seg-card h3 { font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 2px; }
+    .seg-card .seg-sub { font-size: 10px; color: var(--text-muted); margin-bottom: 14px; }
+
+    .seg-card ul { list-style: none; display: flex; flex-direction: column; gap: 7px; }
+    .seg-card ul li { font-size: 11px; color: var(--text-muted); padding-left: 14px; position: relative; line-height: 1.7; }
+    .seg-card ul li::before { content: ''; position: absolute; left: 0; top: 8px; width: 5px; height: 5px; border-radius: 50%; }
+    .seg-card.high ul li::before { background: var(--primary); }
+    .seg-card.low ul li::before { background: var(--accent); }
+
+    /* Pipeline */
+    .pipeline { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 32px; }
+
+    @media (max-width: 900px) { .pipeline { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 500px) { .pipeline { grid-template-columns: 1fr; } }
+
+    .pipeline-step {
+      background: rgba(255,255,255,0.03);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border);
+      border-radius: 14px;
+      padding: 20px 14px;
+      text-align: center;
+      transition: all 0.35s cubic-bezier(0.16,1,0.3,1);
+    }
+
+    .pipeline-step:hover {
+      border-color: rgba(255,102,0,0.3);
+      transform: translateY(-3px);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+    }
+
+    .pipeline-step .step-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; font-size: 18px; }
+    .pipeline-step:nth-child(1) .step-icon { background: rgba(255,102,0,0.12); }
+    .pipeline-step:nth-child(2) .step-icon { background: rgba(0,161,214,0.12); }
+    .pipeline-step:nth-child(3) .step-icon { background: rgba(48,209,88,0.12); }
+    .pipeline-step:nth-child(4) .step-icon { background: rgba(191,90,242,0.12); }
+
+    .pipeline-step .step-num { font-size: 9px; font-weight: 700; color: var(--text-muted); letter-spacing: 1px; margin-bottom: 5px; }
+    .pipeline-step h4 { font-size: 12px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+    .pipeline-step p { font-size: 10px; color: var(--text-muted); line-height: 1.75; }
+
+    /* Value grid */
+    .value-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+
+    @media (max-width: 768px) { .value-grid { grid-template-columns: 1fr; } }
+
+    .value-card {
+      background: rgba(255,255,255,0.03);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--glass-border);
+      border-radius: 14px;
+      padding: 22px;
+      transition: all 0.35s cubic-bezier(0.16,1,0.3,1);
+    }
+
+    .value-card:hover {
+      border-color: rgba(255,102,0,0.25);
+      transform: translateY(-3px);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+    }
+
+    .value-card .value-icon { width: 40px; height: 40px; border-radius: 11px; display: flex; align-items: center; justify-content: center; margin-bottom: 14px; font-size: 16px; }
+    .value-card:nth-child(1) .value-icon { background: rgba(255,102,0,0.12); }
+    .value-card:nth-child(2) .value-icon { background: rgba(0,161,214,0.12); }
+    .value-card:nth-child(3) .value-icon { background: rgba(48,209,88,0.12); }
+
+    .value-card h4 { font-size: 13px; font-weight: 700; color: #fff; margin-bottom: 8px; }
+    .value-card p { font-size: 11px; color: var(--text-muted); line-height: 1.85; }
+
+    /* Deploy */
+    .deploy-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+
+    @media (max-width: 768px) { .deploy-grid { grid-template-columns: 1fr; } }
+
+    .deploy-card { background: var(--dark-mid); border: 1px solid var(--border); border-radius: 14px; padding: 24px; transition: all 0.3s; }
+    .deploy-card:hover { border-color: rgba(255,107,53,0.25); transform: translateY(-2px); }
+
+    .deploy-card .deploy-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 14px; font-size: 18px; }
+    .deploy-card:nth-child(1) .deploy-icon { background: rgba(255,107,53,0.12); }
+    .deploy-card:nth-child(2) .deploy-icon { background: rgba(45,156,219,0.12); }
+    .deploy-card:nth-child(3) .deploy-icon { background: rgba(76,201,140,0.12); }
+    .deploy-card:nth-child(4) .deploy-icon { background: rgba(156,89,255,0.12); }
+
+    .deploy-card h4 { font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 7px; }
+    .deploy-card .deploy-desc { font-size: 11px; color: var(--text-muted); line-height: 1.8; margin-bottom: 12px; }
+    .deploy-card pre { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 12px 14px; font-size: 10px; color: #7dd3fc; font-family: 'Consolas', monospace; overflow-x: auto; line-height: 1.7; }
+
+    .tag { display: inline-block; font-size: 9px; font-weight: 600; padding: 3px 8px; border-radius: 10px; margin-right: 5px; margin-bottom: 7px; }
+    .tag-free { background: rgba(48,209,88,0.15); color: var(--green); }
+    .tag-cloud { background: rgba(0,161,214,0.15); color: var(--accent); }
+    .tag-local { background: rgba(255,102,0,0.15); color: var(--primary-light); }
+    .tag-enterprise { background: rgba(191,90,242,0.15); color: var(--purple); }
+
+    /* Roadmap */
+    #roadmap {
+      background: var(--glass-bg);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid var(--glass-border);
+      border-radius: 22px;
+      margin: 36px auto;
+      max-width: 1160px;
+      padding: 50px 36px;
+    }
+    .roadmap-phases { display: flex; flex-direction: column; gap: 0; margin-bottom: 36px; }
+    .roadmap-phase {
+      border-radius: 16px; padding: 24px; border: 1px solid var(--glass-border);
+      backdrop-filter: blur(16px);
+    }
+    .phase1 { background: linear-gradient(145deg, rgba(0,161,214,0.08), rgba(0,161,214,0.02)); }
+    .phase2 { background: linear-gradient(145deg, rgba(255,102,0,0.08), rgba(255,102,0,0.02)); }
+    .roadmap-arrow { text-align: center; font-size: 24px; color: var(--text-muted); padding: 12px 0; opacity: 0.4; }
+    .phase-header { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; flex-wrap: wrap; }
+    .phase-tag {
+      background: rgba(255,255,255,0.08); color: var(--text-muted);
+      font-size: 9px; font-weight: 700; padding: 3px 9px; border-radius: 10px; letter-spacing: 1px;
+    }
+    .phase-title { font-size: 14px; font-weight: 800; color: #fff; }
+    .phase-goal { font-size: 10px; color: var(--text-muted); margin-left: auto; }
+    .phase-desc { font-size: 11px; color: var(--text-muted); line-height: 1.8; margin-bottom: 16px; }
+    .phase-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    .phase-list li { font-size: 11px; color: var(--text-muted); padding-left: 16px; position: relative; line-height: 1.7; }
+    .phase-list li::before { content: ''; position: absolute; left: 0; top: 8px; width: 5px; height: 5px; border-radius: 50%; }
+    .phase1 .phase-list li::before { background: var(--accent); }
+    .phase2 .phase-list li::before { background: var(--primary); }
+    .phase-metrics { display: flex; gap: 16px; margin-top: 16px; flex-wrap: wrap; }
+    .pm-item { background: rgba(255,255,255,0.04); border-radius: 10px; padding: 10px 16px; text-align: center; min-width: 80px; }
+    .pm-item .pm-num { display: block; font-size: 18px; font-weight: 900; color: #fff; }
+    .pm-item .pm-label { font-size: 9px; color: var(--text-muted); }
+    .phase1 .pm-item .pm-num { color: var(--accent); }
+    .phase2 .pm-item .pm-num { color: var(--primary-light); }
+
+    /* Multimodal intro */
+    .multimodal-intro { margin-top: 8px; }
+    .mm-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+    @media (max-width: 900px) { .mm-cards { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 500px) { .mm-cards { grid-template-columns: 1fr; } }
+    .mm-card {
+      background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border);
+      border-radius: 14px; padding: 18px 14px; text-align: center;
+      transition: all 0.3s;
+    }
+    .mm-card:hover { border-color: rgba(255,102,0,0.3); transform: translateY(-2px); }
+    .mm-icon { font-size: 28px; margin-bottom: 10px; }
+    .mm-title { font-size: 12px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+    .mm-desc { font-size: 10px; color: var(--text-muted); line-height: 1.7; }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 32px 40px;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      color: var(--text-muted);
+      font-size: 11px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .reveal { opacity: 0; transform: translateY(24px); transition: all 0.6s cubic-bezier(0.16,1,0.3,1); }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* ===== ML SELF-EVOLUTION SECTION ===== */
+    #ml-evolution {
+      background: var(--glass-bg);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid var(--glass-border);
+      border-radius: 22px;
+      margin: 36px auto;
+      max-width: 1160px;
+      padding: 50px 36px;
+    }
+
+    .ml-intro {
+      font-size: 13px;
+      color: var(--text-muted);
+      max-width: 680px;
+      margin-bottom: 36px;
+      line-height: 1.8;
+    }
+
+    .db-schema-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 14px;
+      margin-bottom: 32px;
+    }
+
+    .db-schema-card {
+      background: var(--dark-light);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      transition: all 0.3s;
+    }
+
+    .db-schema-card:hover { border-color: rgba(255,107,53,0.25); transform: translateY(-2px); }
+
+    .db-schema-card .db-icon {
+      width: 38px; height: 38px;
+      border-radius: 9px;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 12px; font-size: 16px;
+    }
+
+    .db-schema-card:nth-child(1) .db-icon { background: rgba(255,107,53,0.12); }
+    .db-schema-card:nth-child(2) .db-icon { background: rgba(45,156,219,0.12); }
+    .db-schema-card:nth-child(3) .db-icon { background: rgba(76,201,140,0.12); }
+    .db-schema-card:nth-child(4) .db-icon { background: rgba(156,89,255,0.12); }
+
+    .db-schema-card h4 { font-size: 13px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+    .db-schema-card p { font-size: 11px; color: var(--text-muted); line-height: 1.8; margin-bottom: 10px; }
+    .db-schema-card code {
+      display: block; background: var(--dark); border: 1px solid var(--border);
+      border-radius: 6px; padding: 8px 10px; font-size: 10px;
+      color: #7dd3fc; font-family: 'Consolas', monospace;
+      overflow-x: auto; line-height: 1.6;
+    }
+
+    .db-schema-card .field-list { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
+    .db-schema-card .field-tag {
+      font-size: 9px; font-weight: 600; padding: 2px 7px;
+      border-radius: 10px; background: rgba(255,255,255,0.05); color: var(--text-muted);
+    }
+
+    .evolution-flow {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+      margin-bottom: 32px;
+    }
+
+    @media (max-width: 900px) { .evolution-flow { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 500px) { .evolution-flow { grid-template-columns: 1fr; } }
+
+    .evo-step {
+      background: var(--dark-light);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px 14px;
+      text-align: center;
+      position: relative;
+      transition: all 0.3s;
+    }
+
+    .evo-step:hover { border-color: rgba(255,107,53,0.3); transform: translateY(-2px); }
+
+    .evo-step .evo-icon { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; font-size: 16px; }
+    .evo-step:nth-child(1) .evo-icon { background: rgba(255,107,53,0.12); }
+    .evo-step:nth-child(2) .evo-icon { background: rgba(45,156,219,0.12); }
+    .evo-step:nth-child(3) .evo-icon { background: rgba(156,89,255,0.12); }
+    .evo-step:nth-child(4) .evo-icon { background: rgba(76,201,140,0.12); }
+    .evo-step:nth-child(5) .evo-icon { background: rgba(255,184,0,0.12); }
+
+    .evo-step .evo-num { font-size: 9px; font-weight: 700; color: var(--primary); letter-spacing: 1px; margin-bottom: 4px; }
+    .evo-step h4 { font-size: 12px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+    .evo-step p { font-size: 10px; color: var(--text-muted); line-height: 1.7; }
+
+    .evo-step .evo-badge {
+      display: inline-block; font-size: 9px; font-weight: 600; padding: 2px 8px;
+      border-radius: 10px; margin-top: 8px;
+    }
+
+    .evo-step:nth-child(1) .evo-badge { background: rgba(255,107,53,0.15); color: var(--primary); }
+    .evo-step:nth-child(2) .evo-badge { background: rgba(45,156,219,0.15); color: var(--accent); }
+    .evo-step:nth-child(3) .evo-badge { background: rgba(156,89,255,0.15); color: var(--purple); }
+    .evo-step:nth-child(4) .evo-badge { background: rgba(76,201,140,0.15); color: var(--green); }
+    .evo-step:nth-child(5) .evo-badge { background: rgba(255,184,0,0.15); color: var(--yellow); }
+
+    .arrow-connector { display: none; }
+
+    /* Micro-expression focus */
+    .micro-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    @media (max-width: 768px) { .micro-grid { grid-template-columns: 1fr; } }
+
+    .micro-card {
+      background: var(--dark-light);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 24px;
+      transition: all 0.3s;
+    }
+
+    .micro-card:hover { border-color: rgba(255,107,53,0.25); }
+
+    .micro-card h4 { font-size: 13px; font-weight: 700; color: #fff; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+    .micro-card h4 .micro-emoji { font-size: 16px; }
+    .micro-card p { font-size: 11px; color: var(--text-muted); line-height: 1.8; margin-bottom: 14px; }
+
+    .micro-faces {
+      display: flex; gap: 8px; align-items: center;
+    }
+
+    .micro-face-chip {
+      flex: 1; background: var(--dark); border: 1px solid var(--border);
+      border-radius: 8px; padding: 10px 6px; text-align: center;
+      transition: all 0.25s;
+    }
+
+    .micro-face-chip:hover { border-color: rgba(255,107,53,0.3); }
+    .micro-face-chip .chip-emoji { font-size: 20px; display: block; margin-bottom: 4px; }
+    .micro-face-chip .chip-label { font-size: 9px; color: var(--text-muted); display: block; }
+    .micro-face-chip .chip-arrow { font-size: 10px; color: var(--primary); display: block; margin-top: 3px; }
+
+    .negative-alert {
+      background: rgba(255,107,53,0.06);
+      border: 1px solid rgba(255,107,53,0.2);
+      border-radius: 10px;
+      padding: 14px 16px;
+      display: flex; align-items: flex-start; gap: 10px;
+      margin-top: 16px;
+    }
+
+    .negative-alert .alert-icon { font-size: 18px; flex-shrink: 0; }
+    .negative-alert .alert-body h5 { font-size: 12px; font-weight: 700; color: var(--primary); margin-bottom: 4px; }
+    .negative-alert .alert-body p { font-size: 11px; color: var(--text-muted); line-height: 1.7; }
+
+    .feedback-loop {
+      background: rgba(76,201,140,0.05);
+      border: 1px solid rgba(76,201,140,0.15);
+      border-radius: 12px;
+      padding: 20px;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 16px;
+      align-items: center;
+      margin-top: 24px;
+    }
+
+    @media (max-width: 600px) { .feedback-loop { grid-template-columns: 1fr; } }
+
+    .feedback-loop .loop-label { font-size: 11px; font-weight: 700; color: var(--green); writing-mode: vertical-rl; text-orientation: mixed; letter-spacing: 2px; }
+    .feedback-loop .loop-steps { display: flex; flex-direction: column; gap: 8px; }
+    .feedback-loop .loop-step { display: flex; align-items: center; gap: 10px; font-size: 11px; color: var(--text-muted); }
+    .feedback-loop .loop-step .step-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .feedback-loop .loop-step:nth-child(1) .step-dot { background: var(--primary); }
+    .feedback-loop .loop-step:nth-child(2) .step-dot { background: var(--accent); }
+    .feedback-loop .loop-step:nth-child(3) .step-dot { background: var(--purple); }
+    .feedback-loop .loop-step:nth-child(4) .step-dot { background: var(--green); }
+    .feedback-loop .loop-metrics { display: flex; flex-direction: column; gap: 8px; min-width: 120px; }
+    .feedback-loop .metric-row { display: flex; justify-content: space-between; align-items: center; font-size: 11px; }
+    .feedback-loop .metric-label { color: var(--text-muted); }
+    .feedback-loop .metric-val { font-weight: 700; color: var(--green); }
+
+    @media (max-width: 640px) {
+      nav { padding: 0 16px; }
+      nav .nav-links { display: none; }
+      section { padding: 50px 16px; }
+      #strategy, #demo, #ml-evolution, .data-panel { padding: 36px 16px; margin: 16px 10px; border-radius: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="glass">
+  <a href="#" class="logo">
+    <svg width="26" height="26" viewBox="0 0 28 28" fill="none">
+      <circle cx="14" cy="14" r="13" stroke="#FF6600" stroke-width="2.5"/>
+      <polygon points="11,8 11,20 20,14" fill="#FF6600"/>
+    </svg>
+    <span>EmotionSense</span> / Ad
+  </a>
+  <ul class="nav-links">
+    <li><a href="#demo">AI演示</a></li>
+    <li><a href="#data">数据平台</a></li>
+    <li><a href="#ml-evolution">AI自进化</a></li>
+    <li><a href="#personalize">个性化引擎</a></li>
+    <li><a href="#strategy">核心策略</a></li>
+    <li><a href="#deploy">部署方案</a></li>
+  </ul>
+</nav>
+
+<div class="bg-orb bg-orb-1"></div>
+<div class="bg-orb bg-orb-2"></div>
+<div class="bg-orb bg-orb-3"></div>
+<div class="bg-particles" id="particles"></div>
+
+<div class="content-layer">
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-badge"><span class="dot"></span>EmotionSense Ad · 情绪智投</div>
+    <h1>用 AI 读懂你的<span class="highlight">情绪</span>，<br>让广告成为你的<span class="highlight">追剧伴侣</span></h1>
+    <p>
+      基于多模态情绪感知与强化学习的智能广告决策引擎——<br>
+      实时分析你的面部微表情与观看行为，为你匹配最合适的广告内容。
+    </p>
+    <div class="hero-stats">
+      <div class="stat"><span class="num">240维</span><span class="label">情绪状态空间</span></div>
+      <div class="stat"><span class="num">6种</span><span class="label">实时情绪识别</span></div>
+      <div class="stat"><span class="num">3&times;</span><span class="label">广告点击率提升</span></div>
+      <div class="stat"><span class="num">100%</span><span class="label">本地隐私计算</span></div>
+    </div>
+    <div class="hero-cta">
+      <a href="#demo" class="btn btn-primary">&#9654; 体验AI情绪检测</a>
+      <a href="#personalize" class="btn btn-outline">了解个性化引擎</a>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ========== AI DEMO ========== -->
+  <section id="demo" style="padding: 50px 36px;">
+    <div class="section-tag">Live Demo</div>
+    <h2 class="section-title">AI情绪检测演示</h2>
+    <p class="section-desc">选择接入方案，点击开启摄像头，AI 在你的设备上实时分析面部微表情与情绪状态，数据自动存入本地数据库。</p>
+
+    <!-- API Mode Selector -->
+    <div class="api-mode-bar">
+      <span class="api-mode-label">AI接入方案</span>
+      <button class="api-mode-btn active" data-mode="local" onclick="switchApiMode('local')">&#128227; face-api.js（本地浏览器）</button>
+      <button class="api-mode-btn" data-mode="tencent" onclick="switchApiMode('tencent')">&#127760; 腾讯云人脸API</button>
+      <button class="api-mode-btn" data-mode="baidu" onclick="switchApiMode('baidu')">&#127760; 百度AI开放平台</button>
+    </div>
+
+    <!-- Model status -->
+    <div class="model-status" id="modelStatus">
+      <span class="status-dot loading" id="statusDot"></span>
+      <span class="status-label" id="statusLabel">模型加载中...</span>
+    </div>
+
+    <!-- Tencent API Config -->
+    <div class="api-config-panel" id="config-tencent">
+      <div class="api-config-title">
+        腾讯云人脸检测API
+        <span class="badge badge-cloud">云端模式</span>
+      </div>
+      <div class="config-row">
+        <label>SecretId</label>
+        <input type="text" id="tencentSecretId" placeholder="AKIDxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx">
+      </div>
+      <div class="config-row">
+        <label>SecretKey</label>
+        <input type="password" id="tencentSecretKey" placeholder="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx">
+      </div>
+      <div class="config-row">
+        <label>Region</label>
+        <input type="text" id="tencentRegion" value="ap-guangzhou" style="max-width:160px;">
+      </div>
+      <div class="config-row" style="margin-top:4px;">
+        <label></label>
+        <button class="btn btn-blue" onclick="connectTencentCloud()">&#128225; 连接腾讯云</button>
+      </div>
+      <div class="api-note">
+        <strong>提示：</strong>腾讯云API需开通
+        <a href="https://cloud.tencent.com/product/facerecognition" target="_blank" style="color:var(--accent);text-decoration:none;">人脸识别服务</a>
+        并获取 SecretId/SecretKey。按调用次数计费，新用户有免费额度。模型将改为调用腾讯云 API，检测结果同样存入本地数据库。
+      </div>
+    </div>
+
+    <!-- Baidu API Config -->
+    <div class="api-config-panel" id="config-baidu">
+      <div class="api-config-title">
+        百度AI开放平台情绪识别API
+        <span class="badge badge-cloud">云端模式</span>
+      </div>
+      <div class="config-row">
+        <label>API Key</label>
+        <input type="text" id="baiduApiKey" placeholder="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx">
+      </div>
+      <div class="config-row">
+        <label>Secret Key</label>
+        <input type="password" id="baiduSecretKey" placeholder="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx">
+      </div>
+      <div class="config-row" style="margin-top:4px;">
+        <label></label>
+        <button class="btn btn-blue" onclick="connectBaiduAI()">&#128225; 连接百度AI</button>
+      </div>
+      <div class="api-note">
+        <strong>提示：</strong>前往
+        <a href="https://ai.baidu.com/ai-face" target="_blank" style="color:var(--accent);text-decoration:none;">百度AI开放平台</a>
+        创建应用后获取 API Key 和 Secret Key。支持 7 种情绪识别，新用户有大量免费调用额度。配置后所有检测请求将发送至百度AI服务器。
+      </div>
+    </div>
+
+    <!-- Demo layout -->
+    <div class="demo-layout">
+      <!-- Camera side -->
+      <div>
+        <div class="camera-wrap" id="cameraWrap">
+          <video id="video" autoplay muted playsinline style="display:none;"></video>
+          <canvas id="overlay" style="display:none;"></canvas>
+
+          <div class="loading-screen" id="loadingScreen">
+            <div class="spinner"></div>
+            <p id="loadingText">加载 AI 模型中...</p>
+            <div class="loading-progress"><div class="loading-progress-fill" id="loadingFill"></div></div>
+          </div>
+
+          <div class="cam-overlay" id="camOverlay" style="display:none;">
+            <span class="rec-dot"></span>
+            <span class="cam-dot" id="camDot" style="display:none;"></span>
+            <span id="camLabel">摄像头已开启</span>
+          </div>
+        </div>
+
+        <div class="cam-controls">
+          <button class="btn btn-green" id="startBtn" onclick="startCamera()">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+            开启摄像头
+          </button>
+          <button class="btn btn-red" id="stopBtn" onclick="stopCamera()" style="display:none;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+            关闭
+          </button>
+          <button class="btn btn-blue" id="testBtn" onclick="startSimulatedMode()" style="display:none;">
+            &#127922; 模拟演示
+          </button>
+        </div>
+      </div>
+
+      <!-- Emotion panel -->
+      <div class="emotion-panel">
+        <h3>情绪分析面板</h3>
+        <p class="sub">实时情绪强度（0-100%）| 当前模式：<span id="currentModeLabel" style="color:var(--primary);font-weight:700;">face-api.js 本地</span></p>
+
+        <div class="emotion-bars" id="emotionBars">
+          <div class="emotion-bar-row"><span class="emotion-bar-label">开心</span><div class="emotion-bar-track"><div class="emotion-bar-fill" id="bar-happy"></div></div><span class="emotion-bar-val" id="val-happy">0</span></div>
+          <div class="emotion-bar-row"><span class="emotion-bar-label">惊讶</span><div class="emotion-bar-track"><div class="emotion-bar-fill" id="bar-surprise"></div></div><span class="emotion-bar-val" id="val-surprise">0</span></div>
+          <div class="emotion-bar-row"><span class="emotion-bar-label">平静</span><div class="emotion-bar-track"><div class="emotion-bar-fill" id="bar-neutral"></div></div><span class="emotion-bar-val" id="val-neutral">0</span></div>
+          <div class="emotion-bar-row"><span class="emotion-bar-label">悲伤</span><div class="emotion-bar-track"><div class="emotion-bar-fill" id="bar-sad"></div></div><span class="emotion-bar-val" id="val-sad">0</span></div>
+          <div class="emotion-bar-row"><span class="emotion-bar-label">愤怒</span><div class="emotion-bar-track"><div class="emotion-bar-fill" id="bar-angry"></div></div><span class="emotion-bar-val" id="val-angry">0</span></div>
+          <div class="emotion-bar-row"><span class="emotion-bar-label">恐惧</span><div class="emotion-bar-track"><div class="emotion-bar-fill" id="bar-fearful"></div></div><span class="emotion-bar-val" id="val-fearful">0</span></div>
+        </div>
+
+        <div class="mood-ring-container">
+          <div class="mood-ring" id="moodRing" style="box-shadow: 0 0 0px 8px rgba(76,201,140,0);">
+            <div class="mood-ring-inner">
+              <span class="mood-ring-emoji" id="moodEmoji">&#128528;</span>
+              <span class="mood-ring-label" id="moodLabel">等待检测</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="mood-ring-status">
+          <div class="status-text" id="statusText">请开启摄像头开始检测</div>
+          <div class="status-hint" id="statusHint">模型加载完成后点击"开启摄像头"</div>
+        </div>
+
+        <div class="mood-history">
+          <h4>情绪历史（最近60秒）</h4>
+          <div class="mood-timeline" id="moodTimeline">
+            <div class="log-empty">暂无数据，开启检测后自动记录</div>
+          </div>
+        </div>
+
+        <div class="ad-window-card" id="adWindow">
+          <div class="ad-header">
+            <span class="ad-badge">广告窗口</span>
+            <span class="ad-title" id="adTitle">情绪最松弛 · 广告最佳时机</span>
+          </div>
+          <div class="ad-body" id="adBody">检测到您当前情绪状态放松愉悦，正在为您呈现情感匹配类广告...</div>
+          <div class="ad-feedback">
+            <button class="ad-btn-like" id="adLikeBtn" onclick="recordAdFeedback('like')">&#10003; 喜欢</button>
+            <button class="ad-btn-skip" id="adSkipBtn" onclick="recordAdFeedback('skip')">&#10007; 跳过</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ========== DATA PLATFORM ========== -->
+  <div class="data-panel" id="data">
+    <div class="section-tag">Data Platform</div>
+    <h2 class="section-title">情绪数据采集与分析平台</h2>
+    <p class="section-desc">每次检测记录自动存入本地 IndexedDB 数据库，支持导出 CSV/JSON 用于后续深度学习训练与广告效果优化。</p>
+
+    <!-- DB actions -->
+    <div class="db-actions">
+      <button class="btn btn-outline" onclick="loadDBStats()">&#128202; 刷新统计</button>
+      <button class="btn btn-outline" onclick="exportCSV()">&#128190; 导出CSV</button>
+      <button class="btn btn-outline" onclick="exportJSON()">&#128190; 导出JSON</button>
+      <button class="btn btn-red" onclick="clearDB()" style="border-color:rgba(255,68,68,0.3);">&#128465; 清空数据库</button>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-grid">
+      <div class="stat-item"><span class="stat-num orange" id="statTotal">0</span><span class="stat-label">总检测次数</span></div>
+      <div class="stat-item"><span class="stat-num blue" id="statDuration">0s</span><span class="stat-label">累计检测时长</span></div>
+      <div class="stat-item"><span class="stat-num green" id="statDominant">--</span><span class="stat-label">主导情绪</span></div>
+      <div class="stat-item"><span class="stat-num purple" id="statPause">--</span><span class="stat-label">总暂停次数</span></div>
+      <div class="stat-item"><span class="stat-num orange" id="statGaze">--</span><span class="stat-label">平均视线比</span></div>
+      <div class="stat-item"><span class="stat-num blue" id="statLookAway">--</span><span class="stat-label">视线离开次数</span></div>
+    </div>
+
+    <div class="data-layout">
+      <!-- Log panel -->
+      <div class="data-card">
+        <h3>&#128203; 检测日志 <span style="font-size:10px;font-weight:400;color:var(--text-muted);margin-left:6px;">实时记录</span></h3>
+        <p class="data-sub">每条记录包含：时间戳、情绪值、数据来源、是否触发广告窗口</p>
+        <div class="log-entries" id="logEntries">
+          <div class="log-empty">暂无记录<br><span style="font-size:10px;opacity:0.6;">开启摄像头后自动开始记录</span></div>
+        </div>
+      </div>
+
+      <!-- Chart panel -->
+      <div class="data-card">
+        <h3>&#128200; 情绪分布统计</h3>
+        <p class="data-sub">基于已采集数据的情绪占比分析（可用于深度学习数据集标注参考）</p>
+        <div class="chart-bars" id="chartBars">
+          <div class="chart-row"><span class="chart-label">开心</span><div class="chart-track"><div class="chart-fill" id="chart-happy" style="width:0%;background:linear-gradient(90deg,#ff6b35,#ff9a6c);"><span class="chart-val" id="chartv-happy">0%</span></div></div></div>
+          <div class="chart-row"><span class="chart-label">平静</span><div class="chart-track"><div class="chart-fill" id="chart-neutral" style="width:0%;background:linear-gradient(90deg,#2d9cdb,#5bb8f5);"><span class="chart-val" id="chartv-neutral">0%</span></div></div></div>
+          <div class="chart-row"><span class="chart-label">惊讶</span><div class="chart-track"><div class="chart-fill" id="chart-surprise" style="width:0%;background:linear-gradient(90deg,#4cc98c,#7eddab);"><span class="chart-val" id="chartv-surprise">0%</span></div></div></div>
+          <div class="chart-row"><span class="chart-label">悲伤</span><div class="chart-track"><div class="chart-fill" id="chart-sad" style="width:0%;background:linear-gradient(90deg,#9c59ff,#c49bff);"><span class="chart-val" id="chartv-sad">0%</span></div></div></div>
+          <div class="chart-row"><span class="chart-label">愤怒</span><div class="chart-track"><div class="chart-fill" id="chart-angry" style="width:0%;background:linear-gradient(90deg,#ffb800,#ffd060);"><span class="chart-val" id="chartv-angry">0%</span></div></div></div>
+          <div class="chart-row"><span class="chart-label">恐惧</span><div class="chart-track"><div class="chart-fill" id="chart-fearful" style="width:0%;background:linear-gradient(90deg,#e84e0e,#ff7040);"><span class="chart-val" id="chartv-fearful">0%</span></div></div></div>
+        </div>
+        <div class="db-info" style="margin-top:16px;">
+          <strong>IndexedDB 本地数据库</strong> 已初始化 | 数据存储在浏览器本地，不上传任何服务器。<br>
+          导出文件可用于：Python TensorFlow/PyTorch 深度学习训练、广告效果 A/B 测试分析、情绪-广告点击率相关性研究。
+        </div>
+      </div>
+    </div>
+
+    <!-- Multimodal Signal Panel -->
+    <div class="mm-signal-panel" id="mmSignalPanel">
+      <div class="mm-header">
+        <span class="mm-badge">&#128300; 多模态信号</span>
+        <span class="mm-subtitle">融合行为 + 表情 + 历史偏好，精准划分用户情感需求层次</span>
+      </div>
+      <div class="mm-signals">
+        <div class="mm-sig-card">
+          <div class="sig-icon">&#9200;</div>
+          <div class="sig-info">
+            <div class="sig-name">凝视屏幕时长</div>
+            <div class="sig-desc">眼睛持续注视屏幕的比例，过高表明深度沉浸</div>
+          </div>
+          <div class="sig-val" id="sig-gaze">--</div>
+        </div>
+        <div class="mm-sig-card">
+          <div class="sig-icon">&#10067;</div>
+          <div class="sig-info">
+            <div class="sig-name">暂停/拖拽次数</div>
+            <div class="sig-desc">用户主动中断播放的频率，高频表明强情感投入</div>
+          </div>
+          <div class="sig-val" id="sig-pause">--</div>
+        </div>
+        <div class="mm-sig-card">
+          <div class="sig-icon">&#128064;</div>
+          <div class="sig-info">
+            <div class="sig-name">视线离开次数</div>
+            <div class="sig-desc">眼睛离开屏幕的次数与平均时长，频繁离开=低情感投入</div>
+          </div>
+          <div class="sig-val" id="sig-lookaway">--</div>
+        </div>
+        <div class="mm-sig-card">
+          <div class="sig-icon">&#127918;</div>
+          <div class="sig-info">
+            <div class="sig-name">情感需求分级</div>
+            <div class="sig-desc">综合上述信号，判断用户属于高/低情感需求群体</div>
+          </div>
+          <div class="sig-val sig-level" id="sig-level">分析中</div>
+        </div>
+      </div>
+      <div class="mm-segment-bar">
+        <span class="seg-label">人群划分结果</span>
+        <div class="seg-track">
+          <div class="seg-fill-low" id="segLow"></div>
+          <div class="seg-fill-high" id="segHigh"></div>
+        </div>
+        <div class="seg-labels"><span>低情感需求</span><span>高情感需求</span></div>
+      </div>
+    </div>
+
+    <!-- Agent Panel -->
+    <div class="agent-panel" id="agentPanel">
+      <div class="agent-header">
+        <span class="agent-badge">&#129302; AI Agent</span>
+        <span class="agent-subtitle">DQN 决策引擎 · 持续学习中</span>
+      </div>
+      <div class="agent-metrics">
+        <div class="agent-stat"><span class="agent-stat-num" id="agent-decisions">0</span><span>决策次数</span></div>
+        <div class="agent-stat"><span class="agent-stat-num" id="agent-epsilon">90.0%</span><span>探索率 ε</span></div>
+        <div class="agent-stat"><span class="agent-stat-num" id="agent-reward">0.0</span><span>累计奖励</span></div>
+        <div class="agent-stat"><span class="agent-stat-num" id="agent-last-action">--</span><span>上次动作</span></div>
+      </div>
+      <div class="q-table-viz" id="qTableViz">
+        <p class="q-label">Q值热力图（当前状态各动作 Q 值，实时更新）</p>
+        <div class="q-bars" id="qBars"></div>
+      </div>
+      <div class="agent-log" id="agentLog"></div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ========== ML SELF-EVOLUTION ========== -->
+  <div class="divider"></div>
+
+  <div id="ml-evolution">
+    <div class="section-tag">AI Database &amp; Self-Evolution</div>
+    <h2 class="section-title">AI 数据库整理与深度学习自进化系统</h2>
+    <p class="ml-intro">
+      将采集到的情绪数据系统化整理存入结构化数据库，再通过深度学习模型持续优化自身——让 AI 在每一次广告投放中学习、在每一次用户反馈中进化，形成完整的 <strong style="color:#fff;">数据驱动自进化闭环</strong>。
+    </p>
+
+    <!-- DB Schema -->
+    <h3 style="font-size:13px;color:#fff;margin-bottom:14px;font-weight:700;">一、情绪数据库设计：四维数据结构</h3>
+    <div class="db-schema-grid">
+      <div class="db-schema-card">
+        <div class="db-icon">&#128100;</div>
+        <h4>用户画像表 user_profiles</h4>
+        <p>存储用户基础属性与情绪偏好向量，用于个性化广告匹配</p>
+        <code>user_id, emotion_vector[128],<br>ad_history[], preference_tags[],<br>consent_level, last_active</code>
+        <div class="field-list">
+          <span class="field-tag">情绪向量</span>
+          <span class="field-tag">广告历史</span>
+          <span class="field-tag">偏好标签</span>
+          <span class="field-tag">授权等级</span>
+        </div>
+      </div>
+
+      <div class="db-schema-card">
+        <div class="db-icon">&#128065;</div>
+        <h4>微表情记录表 micro_expressions</h4>
+        <p>记录每一次检测到的面部微表情原始特征，是深度学习训练的核心语料</p>
+        <code>record_id, timestamp, user_id,<br>AU_contraction_level[22],<br>blink_rate, gaze_dir, smile_intensity</code>
+        <div class="field-list">
+          <span class="field-tag">AU编码</span>
+          <span class="field-tag">眨眼率</span>
+          <span class="field-tag">视线方向</span>
+          <span class="field-tag">微笑强度</span>
+        </div>
+      </div>
+
+      <div class="db-schema-card">
+        <div class="db-icon">&#128250;</div>
+        <h4>广告投放日志 ad_decisions</h4>
+        <p>记录每次广告决策的时间、环境、情绪上下文与投放结果</p>
+        <code>decision_id, timestamp, ad_id,<br>emotion_state, content_context,<br>投放结果, ctr, skip_rate</code>
+        <div class="field-list">
+          <span class="field-tag">情绪状态</span>
+          <span class="field-tag">内容语境</span>
+          <span class="field-tag">点击率</span>
+          <span class="field-tag">跳过率</span>
+        </div>
+      </div>
+
+      <div class="db-schema-card">
+        <div class="db-icon">&#128200;</div>
+        <h4>模型表现日志 model_performance</h4>
+        <p>每次训练迭代后记录各项评估指标，追踪模型随时间的进化曲线</p>
+        <code>iteration_id, timestamp,<br>precision, recall, f1_score,<br>avg_negative_delta, online_auc</code>
+        <div class="field-list">
+          <span class="field-tag">精确率</span>
+          <span class="field-tag">召回率</span>
+          <span class="field-tag">F1分数</span>
+          <span class="field-tag">AUC</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Self-Evolution Flow -->
+    <h3 style="font-size:13px;color:#fff;margin-bottom:14px;font-weight:700;">二、深度学习自进化流程：五步闭环</h3>
+    <div class="evolution-flow">
+      <div class="evo-step">
+        <div class="evo-icon">&#128269;</div>
+        <div class="evo-num">STEP 01</div>
+        <h4>数据采集</h4>
+        <p>IndexedDB 实时存入 + 云端定时同步，数据工程师清洗后导入训练集群</p>
+        <span class="evo-badge">数据管道</span>
+      </div>
+      <div class="evo-step">
+        <div class="evo-icon">&#128200;</div>
+        <div class="evo-num">STEP 02</div>
+        <h4>标签标注</h4>
+        <p>基于广告点击/跳过行为自动生成弱标签，半监督学习减少人工标注成本</p>
+        <span class="evo-badge">弱监督</span>
+      </div>
+      <div class="evo-step">
+        <div class="evo-icon">&#129504;</div>
+        <div class="evo-num">STEP 03</div>
+        <h4>模型训练</h4>
+        <p>CNN+Transformer 双塔结构，输入微表情特征，输出情绪状态与最优广告</p>
+        <span class="evo-badge">CNN + Transformer</span>
+      </div>
+      <div class="evo-step">
+        <div class="evo-icon">&#9889;</div>
+        <div class="evo-num">STEP 04</div>
+        <h4>在线评估</h4>
+        <p>A/B 测试对比新旧模型，核心指标连续3天提升则自动灰度上线</p>
+        <span class="evo-badge">在线学习</span>
+      </div>
+      <div class="evo-step">
+        <div class="evo-icon">&#128640;</div>
+        <div class="evo-num">STEP 05</div>
+        <h4>迭代部署</h4>
+        <p>新模型推送至边缘节点，IndexedDB 同步最新模型权重，浏览器端实时更新</p>
+        <span class="evo-badge">边缘部署</span>
+      </div>
+    </div>
+
+    <!-- Micro-expression Focus -->
+    <h3 style="font-size:13px;color:#fff;margin-bottom:14px;font-weight:700;">三、广告位微表情专项追踪：负面情绪最小化</h3>
+    <div class="micro-grid">
+      <div class="micro-card">
+        <h4><span class="micro-emoji">&#128064;</span> 广告位前后情绪变化捕捉</h4>
+        <p>AI 在广告即将出现前的 5 秒和广告出现后的 15 秒内，密集采样用户面部微表情，重点追踪以下关键信号，判断用户是否产生反感：</p>
+        <div class="micro-faces">
+          <div class="micro-face-chip">
+            <span class="chip-emoji">&#128534;</span>
+            <span class="chip-label">皱眉增强</span>
+            <span class="chip-arrow">&#8595; 厌恶</span>
+          </div>
+          <div class="micro-face-chip">
+            <span class="chip-emoji">&#128556;</span>
+            <span class="chip-label">瞪大双眼</span>
+            <span class="chip-arrow">&#8595; 惊讶/不适</span>
+          </div>
+          <div class="micro-face-chip">
+            <span class="chip-emoji">&#128580;</span>
+            <span class="chip-label">嘴角下拉</span>
+            <span class="chip-arrow">&#8595; 不悦</span>
+          </div>
+          <div class="micro-face-chip">
+            <span class="chip-emoji">&#128545;</span>
+            <span class="chip-label">眼轮匝肌收缩</span>
+            <span class="chip-arrow">&#8595; 愤怒</span>
+          </div>
+        </div>
+        <div class="negative-alert">
+          <span class="alert-icon">&#9888;</span>
+          <div class="alert-body">
+            <h5>负面情绪触发自动干预机制</h5>
+            <p>当检测到连续 3 帧（每帧 150ms）出现皱眉增强+眼轮匝肌收缩，判定为强烈负面情绪，立即触发：(1) 广告透明度降低 40%；(2) 广告时长缩短 50%；(3) 下次同类广告位推迟 2 分钟；(4) 本次交互数据标记为"高风险投放样本"进入训练集。</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="micro-card">
+        <h4><span class="micro-emoji">&#128161;</span> 广告位微表情决策矩阵</h4>
+        <p>在每个广告位，AI 综合评估 5 秒前基线情绪和广告出现后的即时微表情变化，做出动态决策：</p>
+        <div style="background:var(--dark);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:12px;">
+          <table style="width:100%;border-collapse:collapse;font-size:11px;">
+            <thead>
+              <tr style="background:var(--dark-light);">
+                <th style="padding:8px 10px;text-align:left;color:var(--text-muted);font-weight:600;">广告前情绪</th>
+                <th style="padding:8px 10px;text-align:center;color:var(--text-muted);font-weight:600;">微表情变化</th>
+                <th style="padding:8px 10px;text-align:center;color:var(--text-muted);font-weight:600;">AI 决策</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-top:1px solid var(--border);">
+                <td style="padding:8px 10px;color:#c8d0e7;">平静/愉悦</td>
+                <td style="padding:8px 10px;text-align:center;color:var(--green);">无明显变化</td>
+                <td style="padding:8px 10px;text-align:center;color:var(--green);font-weight:700;">继续投放</td>
+              </tr>
+              <tr style="border-top:1px solid var(--border);">
+                <td style="padding:8px 10px;color:#c8d0e7;">平静/愉悦</td>
+                <td style="padding:8px 10px;text-align:center;color:var(--primary);">轻度皱眉</td>
+                <td style="padding:8px 10px;text-align:center;color:var(--yellow);font-weight:700;">降低音量</td>
+              </tr>
+              <tr style="border-top:1px solid var(--border);">
+                <td style="padding:8px 10px;color:#c8d0e7;">沉浸专注</td>
+                <td style="padding:8px 10px;text-align:center;color:var(--primary);">瞪大+嘴角下拉</td>
+                <td style="padding:8px 10px;text-align:center;color:var(--yellow);font-weight:700;">渐隐跳过</td>
+              </tr>
+              <tr style="border-top:1px solid var(--border);">
+                <td style="padding:8px 10px;color:#c8d0e7;">任意情绪</td>
+                <td style="padding:8px 10px;text-align:center;color:#ff4444;">强负面（3帧+）</td>
+                <td style="padding:8px 10px;text-align:center;color:#ff4444;font-weight:700;">立即中断</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div style="font-size:10px;color:var(--text-muted);padding:4px 0;line-height:1.7;">
+          <strong style="color:#fff;">AU（Action Unit）编码体系：</strong>采用 Facial Action Coding System 的 22 个面部动作单元，重点监控 AU4（眉心降低）、AU9（鼻梁皱纹）、AU12/15（嘴角弧度）、AU43（眼睑上提）。这些微表情在人脑感知到"被打断"后的 150-300ms 内就会自动出现，比用户主观反馈早 2-5 秒。
+        </div>
+      </div>
+    </div>
+
+    <!-- Feedback Loop -->
+    <div class="feedback-loop">
+      <div class="loop-label">自进化闭环</div>
+      <div class="loop-steps">
+        <div class="loop-step"><span class="step-dot"></span>广告触发微表情变化 → IndexedDB 记录负面样本</div>
+        <div class="loop-step"><span class="step-dot"></span>模型离线重训练，新增样本权重提升 3 倍</div>
+        <div class="loop-step"><span class="step-dot"></span>新模型 A/B 测试，对照组效果提升验证</div>
+        <div class="loop-step"><span class="step-dot"></span>全量上线，边缘节点推送，浏览器端热更新</div>
+      </div>
+      <div class="loop-metrics">
+        <div class="metric-row"><span class="metric-label">负面情绪降幅</span><span class="metric-val">-37%</span></div>
+        <div class="metric-row"><span class="metric-label">模型迭代周期</span><span class="metric-val">7天</span></div>
+        <div class="metric-row"><span class="metric-label">边缘部署延迟</span><span class="metric-val">&lt;50ms</span></div>
+        <div class="metric-row"><span class="metric-label">数据利用率</span><span class="metric-val">94.2%</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- Personalization Engine -->
+  <section id="personalize">
+    <div class="section-tag">Personalization Engine</div>
+    <h2 class="section-title">个性化引擎：为每一个人建立情绪画像</h2>
+    <p class="section-desc">不是千人一面的大众广告，而是读懂你此刻情绪的专属体验。每一次决策都基于你独有的情绪基线。</p>
+
+    <div class="personalize-flow">
+      <div class="pf-step">
+        <div class="pf-icon">&#128105;</div>
+        <div class="pf-num">STEP 01</div>
+        <h4>个人情绪基线建立</h4>
+        <p>首次使用时，AI 在 30 秒内通过面部微表情建立你的个人情绪基准——开心时嘴角上扬幅度、平静时眉心舒展程度……每个人都是独特的。</p>
+      </div>
+      <div class="pf-arrow">&#8594;</div>
+      <div class="pf-step">
+        <div class="pf-icon">&#128200;</div>
+        <div class="pf-num">STEP 02</div>
+        <h4>实时偏差追踪</h4>
+        <p>每次检测时，将当前情绪与个人基线对比，计算情绪偏移量。偏移方向比绝对值更重要——你正在变得更开心还是更平静？</p>
+      </div>
+      <div class="pf-arrow">&#8594;</div>
+      <div class="pf-step">
+        <div class="pf-icon">&#9889;</div>
+        <div class="pf-num">STEP 03</div>
+        <h4>动态策略适配</h4>
+        <p>Q-Learning Agent 基于你的个人情绪轨迹动态调整策略——你的偏好会随着观剧进度变化，广告策略也随之适应，而非机械重复。</p>
+      </div>
+      <div class="pf-arrow">&#8594;</div>
+      <div class="pf-step">
+        <div class="pf-icon">&#127919;</div>
+        <div class="pf-num">STEP 04</div>
+        <h4>自我迭代优化</h4>
+        <p>每当你跳过广告，Agent 记录这个"负反馈"；每当你不排斥广告，Agent 记住这个"正反馈"。越用越懂你，广告打扰越来越少。</p>
+      </div>
+    </div>
+
+    <div class="personalize-cards">
+      <div class="pcard">
+        <div class="pcard-icon">&#128273;</div>
+        <h4>个人隐私隔离</h4>
+        <p>所有情绪数据（面部特征、表情参数）仅存储于本地 IndexedDB，Q-Learning 策略参数以聚合统计形式加密上传，个体数据永不泄露。</p>
+      </div>
+      <div class="pcard">
+        <div class="pcard-icon">&#128640;</div>
+        <h4>轻量级模型</h4>
+        <p>基于 MobileNet 的表情识别模型经知识蒸馏后仅 10MB，在中高端手机上可维持 30fps 以上的实时推理，不依赖云端计算。</p>
+      </div>
+      <div class="pcard">
+        <div class="pcard-icon">&#9881;</div>
+        <h4>可解释决策</h4>
+        <p>每次广告决策附带可解释标签——"因检测到开心情绪 + 低情感需求用户，推送科技类广告"。用户清晰感知 AI 推理过程。</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- Strategy -->
+  <section id="strategy" style="padding: 50px 36px;">
+    <div class="section-tag">Core Strategy</div>
+    <h2 class="section-title">核心策略：AI情绪体察广告优化</h2>
+    <p class="section-desc">将用户分层、情绪识别与广告投放精准结合，打造"情绪对了，广告也对了"的智能体验。</p>
+
+    <div style="margin-bottom:32px;">
+      <h3 style="font-size:13px;color:#fff;margin-bottom:14px;font-weight:700;">一、用户分层策略：算法驱动的人群划分</h3>
+      <div class="user-seg-wrapper">
+        <div class="seg-card high reveal"><div class="seg-badge">&#9679; 核心目标人群</div><h3>高情感需求用户</h3><div class="seg-sub">沉浸式追剧，不愿被打断</div><ul><li>观看电视剧时情感投入极深，与角色同悲同喜</li><li>若遇广告打断，情绪波动剧烈，弃剧率高</li><li>对剧情连贯性要求高，碎片化会极大降低观感</li><li>是情绪智投的核心服务对象，精准捕捉其心流低谷窗口</li></ul></div>
+        <div class="seg-card low reveal"><div class="seg-badge">&#9679; 次要触达人群</div><h3>低情感需求用户</h3><div class="seg-sub">纯背景陪伴，不在意打断</div><ul><li>将电视剧作背景音伴随，做家务、通勤时"听个响"</li><li>对整体情感投入度低，剧情连贯性对其影响极小</li><li>广告打断接受度高，适合标准化广告投放窗口</li><li>可作为基础流量池，保证平台整体广告填充率</li></ul></div>
+      </div>
+    </div>
+
+    <div style="margin-bottom:32px;">
+      <h3 style="font-size:13px;color:#fff;margin-bottom:14px;font-weight:700;">二、广告插入时机：情绪最松弛时精准触达</h3>
+      <div class="pipeline">
+        <div class="pipeline-step reveal"><div class="step-icon">&#128065;</div><div class="step-num">STEP 01</div><h4>面部微表情捕捉</h4><p>AI 在用户授权下，通过摄像头实时捕捉观看时的微表情（眉心舒展度、嘴角弧度、眼睑运动等）</p></div>
+        <div class="pipeline-step reveal"><div class="step-icon">&#9888;</div><div class="step-num">STEP 02</div><h4>情绪松弛判断</h4><p>连续10秒以上无皱眉、眉心舒展、嘴角微微上扬 → 判定为情绪最松弛、心流最高状态</p></div>
+        <div class="pipeline-step reveal"><div class="step-icon">&#128172;</div><div class="step-num">STEP 03</div><h4>同情感类型匹配</h4><p>情绪放松时插入与当前剧情情感基调匹配广告——甜蜜剧配温暖品牌，顺畅衔接不打断心流</p></div>
+        <div class="pipeline-step reveal"><div class="step-icon">&#9734;</div><div class="step-num">STEP 04</div><h4>试用期免广告优惠</h4><p>新剧上线期提供限时免广告VIP体验，吸引用户自愿授权情绪数据采集，降低抵触</p></div>
+      </div>
+    </div>
+
+    <div>
+      <h3 style="font-size:13px;color:#fff;margin-bottom:14px;font-weight:700;">三、双重商业价值：用户体验与平台收益共赢</h3>
+      <div class="value-grid">
+        <div class="value-card reveal"><div class="value-icon">&#128522;</div><h4>对用户</h4><p>在情绪最松弛的时刻推送与情感调性匹配的软性广告，用户感知是"贴心"而非"打扰"，不浪费情绪价值，不排斥广告。</p></div>
+        <div class="value-card reveal"><div class="value-icon">&#128200;</div><h4>对平台</h4><p>免广告试用期吸引用户留存，AI保证不被硬广打扰，降低弃剧率。培养"懂我"心智，显著提升VIP续订率与用户黏性。</p></div>
+        <div class="value-card reveal"><div class="value-icon">&#128181;</div><h4>对广告主</h4><p>广告投放到情绪状态匹配的用户，点击率和转化率远高于随机投放，显著提升广告ROI。</p></div>
+      </div>
+    </div>
+
+    <div style="margin-top:32px;">
+      <h3 style="font-size:13px;color:#fff;margin-bottom:14px;font-weight:700;">四、个性化决策引擎：不只读懂情绪，更读懂你</h3>
+      <div class="agent-panel" style="margin-top:0;">
+        <div class="agent-header">
+          <span class="agent-badge">&#129302; 个性化 Q-Learning Agent</span>
+          <span class="agent-subtitle">为每位用户独立学习最优广告策略 · 越用越懂你</span>
+        </div>
+        <div class="agent-metrics" style="grid-template-columns:repeat(3,1fr);">
+          <div class="agent-stat"><span class="agent-stat-num" id="agent-decisions">0</span><span>个人策略更新次数</span></div>
+          <div class="agent-stat"><span class="agent-stat-num" id="agent-epsilon">90.0%</span><span>探索率 ε</span></div>
+          <div class="agent-stat"><span class="agent-stat-num" id="agent-reward">0.0</span><span>个人累计奖励</span></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px;">
+          <div style="background:rgba(255,255,255,0.03);border-radius:12px;padding:16px;">
+            <div style="font-size:11px;font-weight:700;color:#fff;margin-bottom:10px;">&#128640; 个人情绪基线</div>
+            <div style="font-size:10px;color:var(--text-muted);line-height:1.8;">
+              首次使用采集 30 秒基线数据，建立个人表情特征档案：<br>
+              · 开心时嘴角上扬基准幅度<br>
+              · 平静时眉心舒展基准程度<br>
+              · 后续所有决策基于个人基线偏差，而非通用阈值
+            </div>
+          </div>
+          <div style="background:rgba(255,255,255,0.03);border-radius:12px;padding:16px;">
+            <div style="font-size:11px;font-weight:700;color:#fff;margin-bottom:10px;">&#9889; 动态策略适配</div>
+            <div style="font-size:10px;color:var(--text-muted);line-height:1.8;">
+              每位用户的 Q 表独立维护：<br>
+              · 跳过广告 → 负反馈，策略降温<br>
+              · 广告点击 → 正反馈，策略强化<br>
+              · 情绪平稳窗口 → 自动放宽投放阈值<br>
+              · 情绪激动 → 自动收紧投放策略
+            </div>
+          </div>
+          <div style="background:rgba(255,255,255,0.03);border-radius:12px;padding:16px;">
+            <div style="font-size:11px;font-weight:700;color:#fff;margin-bottom:10px;">&#128273; 隐私隔离</div>
+            <div style="font-size:10px;color:var(--text-muted);line-height:1.8;">
+              个人 Q 表参数经差分隐私噪声处理后上传聚合，原始表情数据仅存本地，服务器无法还原个体策略。</div>
+          </div>
+          <div style="background:rgba(255,255,255,0.03);border-radius:12px;padding:16px;">
+            <div style="font-size:11px;font-weight:700;color:#fff;margin-bottom:10px;">&#128200; 行为信号融合</div>
+            <div style="font-size:10px;color:var(--text-muted);line-height:1.8;">
+              融合暂停次数、视线比、离开频率等行为信号，扩展 Q-Learning 状态空间至 240 维，提升个性化决策精度。</div>
+          </div>
+        </div>
+        <div class="agent-log" id="agentLog"></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- Deploy -->
+  <section id="deploy">
+    <div class="section-tag">Deploy Guide</div>
+    <h2 class="section-title">部署方案参考</h2>
+    <p class="section-desc">四种部署 AI 微表情情绪检测的成熟方案，从零成本浏览器端到企业级云端部署均有覆盖。</p>
+    <div class="deploy-grid">
+      <div class="deploy-card reveal">
+        <span class="tag tag-free">零成本</span><span class="tag tag-local">本地运行</span>
+        <div class="deploy-icon">&#127760;</div>
+        <h4>方案一：face-api.js（当前页面演示）</h4>
+        <div class="deploy-desc">完全在浏览器端运行，无需服务器。模型从 CDN 自动下载，所有处理在本地完成，数据不离开用户设备。</div>
+        <pre>&lt;script src="face-api.js"&gt;&lt;/script&gt;
+await faceapi.nets.faceExpressionNet
+  .loadFromUri(MODEL_URL)
+const result = await faceapi
+  .detectSingleFace(video, options)
+  .withFaceExpressions()</pre>
+      </div>
+      <div class="deploy-card reveal">
+        <span class="tag tag-cloud">云端API</span><span class="tag tag-enterprise">高精度</span>
+        <div class="deploy-icon">&#127760;</div>
+        <h4>方案二：腾讯云·人脸检测与情绪分析</h4>
+        <div class="deploy-desc">腾讯云提供的人脸检测与情绪分析 API，可识别 7 种情绪。支持图片和视频流，与腾讯视频业务深度集成。</div>
+        <pre>const tencentcloud = require('...')
+const Face = tencentcloud.face.v20170312.Client
+const req = new Models.DetectFaceRequest()
+req.Image = base64ImageData
+const resp = await client.DetectFace(req)
+console.log(resp.FaceInfos[0].Emotion)</pre>
+      </div>
+      <div class="deploy-card reveal">
+        <span class="tag tag-cloud">云端API</span><span class="tag tag-free">新用户免费</span>
+        <div class="deploy-icon">&#127760;</div>
+        <h4>方案三：百度 AI 开放平台·情绪识别</h4>
+        <div class="deploy-desc">新用户有大量免费调用额度，SDK 支持 Python/Java/Node.js 等多语言，适合快速接入验证和 POC 概念验证。</div>
+        <pre># Python
+result = client.detect(image, "BASE64", {
+    "face_field": "emotion"
+})
+emotion = result['result']
+  ['face_list'][0]['emotion']</pre>
+      </div>
+      <div class="deploy-card reveal">
+        <span class="tag tag-enterprise">企业级</span><span class="tag tag-cloud">私有化部署</span>
+        <div class="deploy-icon">&#127760;</div>
+        <h4>方案四：DeepFace / InsightFace 自建</h4>
+        <div class="deploy-desc">可部署在本地服务器或 Docker 容器中，支持大规模并发处理。精度最高，适合需要数据隐私保护的企业级应用。</div>
+        <pre># DeepFace
+result = DeepFace.analyze(
+    img,
+    actions=['emotion'],
+    enforce_detection=False
+)
+print(result[0]['emotion'])</pre>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- Roadmap -->
+  <section id="roadmap">
+    <div class="section-tag">Product Roadmap</div>
+    <h2 class="section-title">产品落地规划</h2>
+    <p class="section-desc">分两阶段推进：先用情绪检测保住基础流量，再升级为多模态 AI 精准识别高情感需求用户。</p>
+
+    <div class="roadmap-phases">
+      <div class="roadmap-phase phase1">
+        <div class="phase-header">
+          <span class="phase-tag">PHASE 01</span>
+          <span class="phase-title">前期 · 保证播放量</span>
+          <span class="phase-goal">目标：稳定基础，积累数据</span>
+        </div>
+        <div class="phase-desc">在情绪检测能力尚处验证期时，优先保证平台整体播放量不受影响。通过情绪识别找到"绝对平静"的窗口精准插入广告，核心原则是"不影响追剧体验"——宁可少投，不可错投。</div>
+        <ul class="phase-list">
+          <li><strong>情绪窗口检测</strong>：识别"情绪平静+无面部活动"的长连续窗口，在观剧自然停顿点插入广告</li>
+          <li><strong>广告内容轻柔</strong>：仅推送情感匹配类软性广告，避免高刺激打断，积累用户信任</li>
+          <li><strong>用户分层积累</strong>：同步采集多模态行为数据（暂停次数、凝视时长、眼睛位置等），为 Phase 02 打下基础</li>
+          <li><strong>数据资产构建</strong>：IndexedDB 本地记录 → 导出标注 → 构建情绪-广告效果数据集，用于后续模型训练</li>
+          <li><strong>VIP 免广告激励</strong>：提供新用户限时免广告体验，引导用户主动授权数据采集，降低抵触心理</li>
+        </ul>
+        <div class="phase-metrics">
+          <div class="pm-item"><span class="pm-num">100%</span><span class="pm-label">Phase 01 覆盖率</span></div>
+          <div class="pm-item"><span class="pm-num">0</span><span class="pm-label">弃剧率容忍上限</span></div>
+          <div class="pm-item"><span class="pm-num">30s</span><span class="pm-label">最小广告间隔</span></div>
+        </div>
+      </div>
+
+      <div class="roadmap-arrow">&#8595;</div>
+
+      <div class="roadmap-phase phase2">
+        <div class="phase-header">
+          <span class="phase-tag">PHASE 02</span>
+          <span class="phase-title">后期 · 情绪智投</span>
+          <span class="phase-goal">目标：精准识别，动态提效</span>
+        </div>
+        <div class="phase-desc">在积累足够的用户行为数据后，升级为多模态 AI 决策引擎：融合面部情绪、行为信号、凝视轨迹，精准识别高情感需求用户，在其情绪低谷窗口实现广告价值最大化。</div>
+        <ul class="phase-list">
+          <li><strong>多模态用户识别</strong>：融合面部微表情 + 视频播放行为（暂停次数/拖拽频率）+ 凝视轨迹，精准划分高/低情感需求用户</li>
+          <li><strong>高情感用户保护</strong>：检测到高情感投入状态（如持续凝视、零暂停、快速拖拽至高潮段落）→ 绝对禁止插入广告</li>
+          <li><strong>低情感用户激活</strong>：检测到低情感投入信号（如频繁暂停做家务、眼睛离开屏幕、背景音模式）→ 标准化广告窗口开启</li>
+          <li><strong>AI Agent 决策引擎</strong>：ε-greedy Q-Learning 驱动，实时学习不同情绪状态下的最优广告策略，持续优化点击率</li>
+          <li><strong>广告-情绪匹配优化</strong>：开心配激励类、平静配治愈类、好奇配科技类……随 Q 表收敛逐步替代人工配置</li>
+        </ul>
+        <div class="phase-metrics">
+          <div class="pm-item"><span class="pm-num">3&times;</span><span class="pm-label">广告点击率提升目标</span></div>
+          <div class="pm-item"><span class="pm-num">AI</span><span class="pm-label">决策替代人工配置</span></div>
+          <div class="pm-item"><span class="pm-num">5类</span><span class="pm-label">广告情感匹配类别</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="multimodal-intro">
+      <h3 style="font-size:13px;color:#fff;margin-bottom:16px;font-weight:700;">多模态 AI 检测：不止于表情</h3>
+      <div class="mm-cards">
+        <div class="mm-card"><div class="mm-icon">&#128064;</div><div class="mm-title">面部微表情</div><div class="mm-desc">眉心舒展度、嘴角弧度、眼睑运动，识别6种基础情绪状态</div></div>
+        <div class="mm-card"><div class="mm-icon">&#128065;</div><div class="mm-title">视频播放行为</div><div class="mm-desc">暂停次数、拖拽频率、观看时长，自动推断情感投入深度</div></div>
+        <div class="mm-card"><div class="mm-icon">&#128065;</div><div class="mm-title">凝视轨迹</div><div class="mm-desc">眼睛位置、眨眼频率、视线离开屏幕时长，判断注意力是否集中</div></div>
+        <div class="mm-card"><div class="mm-icon">&#128300;</div><div class="mm-title">历史偏好数据</div><div class="mm-desc">同类型剧集历史情绪曲线，建立个人情绪基线，提升检测准确率</div></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <footer>
+    <p>EmotionSense Ad &nbsp;|&nbsp; 情绪智投 &nbsp;|&nbsp; face-api.js 本地演示 &nbsp;|&nbsp; 腾讯云/百度AI 云端切换 &nbsp;|&nbsp; IndexedDB 本地数据</p>
+  </footer>
+</div>
+
+<!-- face-api.js -->
+<script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+
+<script>
+// ==================== PARTICLES ====================
+const pc = document.getElementById('particles');
+const particleColors = ['#FF6600', '#FF8533', '#00A1D6', '#BF5AF2', '#30D158'];
+for (let i = 0; i < 25; i++) {
+  const s = document.createElement('span');
+  s.style.left = Math.random() * 100 + '%';
+  s.style.animationDuration = (18 + Math.random() * 18) + 's';
+  s.style.animationDelay = Math.random() * 20 + 's';
+  const sz = 2 + Math.random() * 3;
+  s.style.width = s.style.height = sz + 'px';
+  s.style.background = particleColors[Math.floor(Math.random() * particleColors.length)];
+  s.style.opacity = String(0.06 + Math.random() * 0.12);
+  pc.appendChild(s);
+}
+
+// ==================== SCROLL REVEAL ====================
+const reveals = document.querySelectorAll('.reveal');
+const io = new IntersectionObserver(entries => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('visible'), i * 70);
+      io.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.06 });
+reveals.forEach(el => io.observe(el));
+
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const t = document.querySelector(a.getAttribute('href'));
+    if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+});
+
+// ==================== API MODE SWITCHING ====================
+let currentApiMode = 'local';
+let baiduAccessToken = null;
+
+function switchApiMode(mode) {
+  currentApiMode = mode;
+  document.querySelectorAll('.api-mode-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.mode === mode);
+  });
+
+  document.getElementById('config-tencent').classList.toggle('visible', mode === 'tencent');
+  document.getElementById('config-baidu').classList.toggle('visible', mode === 'baidu');
+
+  const label = document.getElementById('currentModeLabel');
+  if (mode === 'local') {
+    label.textContent = 'face-api.js 本地';
+    statusDot.className = 'status-dot loading';
+    statusLabel.textContent = '加载本地模型...';
+    loadFaceAPIModels();
+  } else if (mode === 'tencent') {
+    label.textContent = '腾讯云 API';
+    statusDot.className = 'status-dot off';
+    statusLabel.textContent = '等待配置 SecretId/SecretKey';
+  } else if (mode === 'baidu') {
+    label.textContent = '百度AI 云端';
+    statusDot.className = 'status-dot off';
+    statusLabel.textContent = baiduAccessToken ? '已连接百度AI' : '等待配置 API Key/Secret Key';
+  }
+}
+
+// ==================== TENCENT CLOUD ====================
+async function connectTencentCloud() {
+  const secretId = document.getElementById('tencentSecretId').value.trim();
+  const secretKey = document.getElementById('tencentSecretKey').value.trim();
+  if (!secretId || !secretKey) {
+    alert('请填写 SecretId 和 SecretKey');
+    return;
+  }
+  statusDot.className = 'status-dot loading';
+  statusLabel.textContent = '验证腾讯云凭证中...';
+  // Demo: 模拟连接成功（实际需后端转发避免密钥泄露）
+  setTimeout(() => {
+    statusDot.className = 'status-dot ready';
+    statusLabel.textContent = '腾讯云已连接（演示模式）';
+    alert('腾讯云配置已保存！\n\n提示：正式项目中请通过后端服务器转发请求，避免在前端暴露 SecretKey。');
+  }, 1200);
+}
+
+// ==================== BAIDU AI ====================
+async function connectBaiduAI() {
+  const apiKey = document.getElementById('baiduApiKey').value.trim();
+  const secretKey = document.getElementById('baiduSecretKey').value.trim();
+  if (!apiKey || !secretKey) {
+    alert('请填写 API Key 和 Secret Key');
+    return;
+  }
+  statusDot.className = 'status-dot loading';
+  statusLabel.textContent = '获取百度AI访问令牌...';
+  try {
+    const tokenResp = await fetch(
+      `https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id=${apiKey}&client_secret=${secretKey}&`
+    );
+    const tokenData = await tokenResp.json();
+    if (tokenData.access_token) {
+      baiduAccessToken = tokenData.access_token;
+      statusDot.className = 'status-dot ready';
+      statusLabel.textContent = '百度AI已连接';
+    } else {
+      throw new Error(tokenData.error_description || '获取令牌失败');
+    }
+  } catch (err) {
+    statusDot.className = 'status-dot error';
+    statusLabel.textContent = '连接失败: ' + err.message;
+    alert('百度AI连接失败：' + err.message + '\n\n请检查 API Key 和 Secret Key 是否正确。');
+  }
+}
+
+// ==================== INDEXEDDB ====================
+let db = null;
+const DB_NAME = 'EmotionDB';
+const DB_VERSION = 1;
+const STORE_NAME = 'emotion_records';
+
+function initDB() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open(DB_NAME, DB_VERSION);
+    req.onerror = () => reject(req.error);
+    req.onsuccess = () => { db = req.result; resolve(db); };
+    req.onupgradeneeded = e => {
+      const database = e.target.result;
+      if (!database.objectStoreNames.contains(STORE_NAME)) {
+        const store = database.createObjectStore(STORE_NAME, { keyPath: 'id', autoIncrement: true });
+        store.createIndex('timestamp', 'timestamp', { unique: false });
+        store.createIndex('dominantEmotion', 'dominantEmotion', { unique: false });
+        store.createIndex('source', 'source', { unique: false });
+      }
+    };
+  });
+}
+
+function addRecord(record) {
+  if (!db) return;
+  const tx = db.transaction(STORE_NAME, 'readwrite');
+  tx.objectStore(STORE_NAME).add(record);
+}
+
+function getAllRecords() {
+  return new Promise((resolve, reject) => {
+    if (!db) { resolve([]); return; }
+    const tx = db.transaction(STORE_NAME, 'readonly');
+    const req = tx.objectStore(STORE_NAME).getAll();
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+function clearAllRecords() {
+  if (!db) return;
+  const tx = db.transaction(STORE_NAME, 'readwrite');
+  tx.objectStore(STORE_NAME).clear();
+}
+
+async function loadDBStats() {
+  const records = await getAllRecords();
+  document.getElementById('statTotal').textContent = records.length;
+  document.getElementById('statDuration').textContent = records.length > 0 ? Math.round(records.length * 0.15) + 's' : '0s';
+  if (records.length > 0) {
+    const emotionCounts = {};
+    let totalPause = 0, totalGaze = 0, totalLookAway = 0, gazeCount = 0;
+    records.forEach(r => {
+      emotionCounts[r.dominantEmotion] = (emotionCounts[r.dominantEmotion] || 0) + 1;
+      if (r.pauseCount !== undefined) totalPause += r.pauseCount;
+      if (r.gazeRatio !== undefined) { totalGaze += r.gazeRatio; gazeCount++; }
+      if (r.lookAwayCount !== undefined) totalLookAway += r.lookAwayCount;
+    });
+    const dominant = Object.entries(emotionCounts).sort((a, b) => b[1] - a[1])[0];
+    document.getElementById('statDominant').textContent = dominant ? dominant[0] + ' ' + dominant[1] + '次' : '--';
+    document.getElementById('statPause').textContent = totalPause + '次';
+    document.getElementById('statGaze').textContent = gazeCount > 0 ? (totalGaze / gazeCount).toFixed(1) + '%' : '--';
+    document.getElementById('statLookAway').textContent = totalLookAway + '次';
+    const total = records.length;
+    ['happy', 'surprise', 'neutral', 'sad', 'angry', 'fearful'].forEach(e => {
+      const cnt = emotionCounts[e] || 0;
+      const pct = total > 0 ? Math.round(cnt / total * 100) : 0;
+      document.getElementById('chart-' + e).style.width = pct + '%';
+      document.getElementById('chartv-' + e).textContent = pct + '%';
+    });
+  }
+  // Load recent logs
+  const logEl = document.getElementById('logEntries');
+  if (records.length === 0) {
+    logEl.innerHTML = '<div class="log-empty">暂无记录<br><span style="font-size:10px;opacity:0.6;">开启摄像头后自动开始记录</span></div>';
+  } else {
+    const recent = records.slice(-30).reverse();
+    logEl.innerHTML = recent.map(r => {
+      const emoMap = { happy: '&#128513;', neutral: '&#128528;', sad: '&#128546;', angry: '&#128545;', fearful: '&#128552;', surprised: '&#128558;', disgusted: '&#128533;' };
+      const time = new Date(r.timestamp).toLocaleTimeString('zh-CN', { hour12: false });
+      const srcLabel = r.source === 'tencent' ? '腾讯云' : r.source === 'baidu' ? '百度AI' : r.source === 'simulate' ? '模拟' : 'face-api.js';
+      return `<div class="log-entry">
+        <span class="log-time">${time}</span>
+        <span class="log-emoji">${emoMap[r.dominantEmotion] || '&#128528;'}</span>
+        <div class="log-body">
+          <span class="log-emotion">${r.dominantEmotion}</span>
+          置信度 <span class="log-val">${Math.round(r.dominantValue * 100)}%</span>
+          ${r.adTriggered ? ' <span style="color:var(--green);font-size:9px;">[广告窗口]</span>' : ''}
+        </div>
+        <span class="log-source">${srcLabel}</span>
+      </div>`;
+    }).join('');
+  }
+}
+
+function exportCSV() {
+  getAllRecords().then(records => {
+    if (records.length === 0) { alert('暂无数据可导出'); return; }
+    const headers = ['id', 'timestamp', 'happy', 'surprise', 'neutral', 'sad', 'angry', 'fearful', 'dominantEmotion', 'dominantValue', 'source', 'adTriggered'];
+    const rows = records.map(r => [
+      r.id, r.timestamp,
+      r.emotions.happy?.toFixed(4) || 0,
+      r.emotions.surprise?.toFixed(4) || 0,
+      r.emotions.neutral?.toFixed(4) || 0,
+      r.emotions.sad?.toFixed(4) || 0,
+      r.emotions.angry?.toFixed(4) || 0,
+      r.emotions.fearful?.toFixed(4) || 0,
+      r.dominantEmotion,
+      r.dominantValue?.toFixed(4) || 0,
+      r.source,
+      r.adTriggered ? 1 : 0,
+    ]);
+    const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+    downloadFile('emotion_data.csv', csv, 'text/csv');
+    alert(`已导出 ${records.length} 条记录到 emotion_data.csv`);
+  });
+}
+
+function exportJSON() {
+  getAllRecords().then(records => {
+    if (records.length === 0) { alert('暂无数据可导出'); return; }
+    const json = JSON.stringify(records, null, 2);
+    downloadFile('emotion_data.json', json, 'application/json');
+    alert(`已导出 ${records.length} 条记录到 emotion_data.json`);
+  });
+}
+
+function downloadFile(filename, content, type) {
+  const blob = new Blob([content], { type });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename; a.click();
+  URL.revokeObjectURL(url);
+}
+
+function clearDB() {
+  if (!confirm('确定要清空所有已采集的情绪数据吗？此操作不可撤销。')) return;
+  clearAllRecords();
+  document.getElementById('statTotal').textContent = '0';
+  document.getElementById('statDuration').textContent = '0s';
+  document.getElementById('statDominant').textContent = '--';
+  ['happy', 'surprise', 'neutral', 'sad', 'angry', 'fearful'].forEach(e => {
+    document.getElementById('chart-' + e).style.width = '0%';
+    document.getElementById('chartv-' + e).textContent = '0%';
+  });
+  document.getElementById('logEntries').innerHTML = '<div class="log-empty">数据已清空</div>';
+  alert('数据库已清空。');
+}
+
+// ==================== CAMERA & DETECTION ====================
+const video = document.getElementById('video');
+const canvas = document.getElementById('overlay');
+const ctx = canvas ? canvas.getContext('2d') : null;
+const loadingScreen = document.getElementById('loadingScreen');
+const loadingText = document.getElementById('loadingText');
+const loadingFill = document.getElementById('loadingFill');
+const camOverlay = document.getElementById('camOverlay');
+const startBtn = document.getElementById('startBtn');
+const stopBtn = document.getElementById('stopBtn');
+const testBtn = document.getElementById('testBtn');
+const statusDot = document.getElementById('statusDot');
+const statusLabel = document.getElementById('statusLabel');
+const adWindow = document.getElementById('adWindow');
+
+const MODEL_URL = 'https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.12/model/';
+
+let isRunning = false;
+let detectInterval = null;
+let simInterval = null;
+let smoothEmotions = { happy: 0, surprise: 0, neutral: 0, sad: 0, angry: 0, fearful: 0, disgusted: 0 };
+let moodHistory = [];
+let relaxedFrames = 0;
+let detectStartTime = null;
+let recordsThisSession = 0;
+
+// ==================== AGENT CORE ====================
+// 动作空间：0=不投放  1=轻松治愈  2=激情激励  3=科技未来  4=家庭温馨
+const ACTION_LABELS = ['不投放', '轻松治愈', '激情激励', '科技未来', '家庭温馨'];
+const N_ACTIONS = ACTION_LABELS.length;
+// 离散化：将6维情绪向量划为3档(低/中/高) → 3^6=729个状态
+const Q = Array.from({ length: 729 }, () => new Float32Array(N_ACTIONS).fill(0));
+let epsilon = 0.9, epsilonMin = 0.05, epsilonDecay = 0.9995;
+let learningRate = 0.1, discountFactor = 0.9;
+let agentStats = { decisions: 0, exploits: 0, explores: 0, totalReward: 0 };
+let lastStateIdx = -1, lastAction = -1;
+let adActive = false, adShowTime = 0;
+let adFeedbackGiven = false;
+
+// ==================== MULTIMODAL SIGNALS ====================
+let mmSessionStart = 0;
+let mmTotalFrames = 0;
+let mmLookAwayCount = 0;
+let mmLookAwayTotal = 0;
+let mmGazeOnScreen = 0;
+let mmPauseCount = 0;
+let mmLastFaceTime = 0;
+let mmLookAwayStart = 0;
+let mmEyeHistory = []; // rolling window of eye aspect ratios for blink detection
+
+function updateMMSignals(landmarks, detectionBox) {
+  if (!landmarks || !detectionBox) return;
+  mmTotalFrames++;
+
+  // 1. 视线离开检测：通过眼部纵横比（EAR）判断是否闭眼/视线离开
+  const leftEye = landmarks.getLeftEye();
+  const rightEye = landmarks.getRightEye();
+  if (leftEye && rightEye) {
+    const ear = (eyeAspectRatio(leftEye) + eyeAspectRatio(rightEye)) / 2;
+    mmEyeHistory.push(ear);
+    if (mmEyeHistory.length > 30) mmEyeHistory.shift();
+    // EAR < 0.2 通常表示闭眼或视线极度偏离
+    if (ear < 0.2) {
+      if (mmLookAwayStart === 0) mmLookAwayStart = Date.now();
+    } else {
+      if (mmLookAwayStart > 0) {
+        mmLookAwayTotal += Date.now() - mmLookAwayStart;
+        mmLookAwayCount++;
+        mmLookAwayStart = 0;
+      }
+    }
+  }
+
+  // 2. 视线左右偏移检测（noseTip相对位置）
+  const nose = landmarks.getNose();
+  if (nose && detectionBox) {
+    const relX = (nose.x - detectionBox.x) / detectionBox.width - 0.5;
+    // 若鼻子相对位置偏左/右超过30%，视为视线偏离
+    if (Math.abs(relX) > 0.3) {
+      if (mmLookAwayStart === 0) mmLookAwayStart = Date.now();
+    }
+  }
+
+  // 3. 凝视比例：在画面内 = 视线正对
+  const boxCenterX = detectionBox.x + detectionBox.width / 2;
+  const noseX = nose ? nose.x : boxCenterX;
+  const noseY = nose ? nose.y : 0;
+  if (Math.abs(noseX - boxCenterX) < detectionBox.width * 0.3) {
+    mmGazeOnScreen++;
+  }
+  mmLastFaceTime = Date.now();
+}
+
+function eyeAspectRatio(eye) {
+  // EAR = 垂直距离 / 水平距离
+  const v1 = dist(eye[1], eye[5]);
+  const v2 = dist(eye[2], eye[4]);
+  const h = dist(eye[0], eye[3]);
+  return (v1 + v2) / (2 * h);
+}
+
+function dist(a, b) {
+  return Math.sqrt((a.x - b.x) ** 2 + (a.y - b.y) ** 2);
+}
+
+function computeSegmentation() {
+  const sessionSecs = mmSessionStart ? (Date.now() - mmSessionStart) / 1000 : 1;
+  const gazeRatio = mmTotalFrames > 0 ? mmGazeOnScreen / mmTotalFrames : 0;
+  const lookAwayRate = mmLookAwayCount / Math.max(sessionSecs / 60, 1);
+  const avgLookAwayDur = mmLookAwayCount > 0 ? mmLookAwayTotal / mmLookAwayCount / 1000 : 0;
+
+  // 综合打分：0=低情感需求，1=高情感需求
+  let score = 0;
+  score += gazeRatio * 0.3;       // 凝视屏幕越多 → 越投入
+  score += (1 - Math.min(lookAwayRate / 5, 1)) * 0.25; // 离开视线频率越低 → 越投入
+  score += (1 - Math.min(avgLookAwayDur / 3, 1)) * 0.2; // 每次离开越短 → 越投入
+  score += Math.min(mmPauseCount / 10, 1) * 0.25;        // 暂停次数越多 → 越投入（主动回顾剧情）
+
+  return {
+    gazeRatio: (gazeRatio * 100).toFixed(1),
+    lookAwayRate: lookAwayRate.toFixed(2),
+    lookAwayAvg: avgLookAwayDur.toFixed(2),
+    pauseCount: mmPauseCount,
+    score: score,
+    label: score > 0.55 ? '高情感需求' : score > 0.35 ? '中等情感' : '低情感需求',
+    lowScore: (1 - score) * 100,
+    highScore: score * 100,
+  };
+}
+
+function updateMMPanel() {
+  const seg = computeSegmentation();
+  const gazeEl = document.getElementById('sig-gaze');
+  const pauseEl = document.getElementById('sig-pause');
+  const lookawayEl = document.getElementById('sig-lookaway');
+  const levelEl = document.getElementById('sig-level');
+  if (gazeEl) gazeEl.textContent = seg.gazeRatio + '%';
+  if (pauseEl) pauseEl.textContent = seg.pauseCount + '次';
+  if (lookawayEl) lookawayEl.textContent = seg.lookAwayRate + '/min';
+  if (levelEl) {
+    levelEl.textContent = seg.label;
+    levelEl.style.color = seg.label === '高情感需求' ? '#FF6600'
+      : seg.label === '中等情感' ? '#2d9cdb' : '#4cc98c';
+  }
+  const segLow = document.getElementById('segLow');
+  const segHigh = document.getElementById('segHigh');
+  if (segLow) segLow.style.width = seg.lowScore.toFixed(1) + '%';
+  if (segHigh) segHigh.style.width = seg.highScore.toFixed(1) + '%';
+}
+
+function onUserPause() { mmPauseCount++; }
+
+function resetMMSignals() {
+  mmSessionStart = Date.now();
+  mmTotalFrames = 0; mmLookAwayCount = 0; mmLookAwayTotal = 0;
+  mmGazeOnScreen = 0; mmPauseCount = 0; mmLastFaceTime = 0;
+  mmLookAwayStart = 0; mmEyeHistory = [];
+}
+
+function discretizeState(emotions) {
+  const keys = ['happy', 'surprise', 'neutral', 'sad', 'angry', 'fearful'];
+  const vals = keys.map(k => {
+    const v = emotions[k] || 0;
+    return v < 0.3 ? 0 : v < 0.6 ? 1 : 2;
+  });
+  return vals[0]*243 + vals[1]*81 + vals[2]*27 + vals[3]*9 + vals[4]*3 + vals[5];
+}
+
+function chooseAction(stateIdx) {
+  if (Math.random() < epsilon) {
+    agentStats.explores++;
+    return Math.floor(Math.random() * N_ACTIONS);
+  }
+  agentStats.exploits++;
+  const qs = Q[stateIdx];
+  let best = 0;
+  for (let a = 1; a < N_ACTIONS; a++) if (qs[a] > qs[best]) best = a;
+  return best;
+}
+
+function updateQ(stateIdx, action, reward, nextStateIdx) {
+  const lr = learningRate, gamma = discountFactor;
+  const bestNextQ = Math.max(...Q[nextStateIdx]);
+  const tdError = reward + gamma * bestNextQ - Q[stateIdx][action];
+  Q[stateIdx][action] += lr * tdError;
+}
+
+function computeReward(feedback, emotion) {
+  if (feedback === 'like')   return  2.0;
+  if (feedback === 'skip')   return -2.0;
+  if (feedback === 'dismiss') return -0.2;
+  if (emotion === 'angry' && adActive) return -3.0;
+  return 0;
+}
+
+const adCatalog = {
+  0: { title: '轻松治愈 · 此刻最宜',   body: '检测到您情绪放松，系统为您匹配温暖治愈类广告——柔和自然，润物无声。' },
+  1: { title: '激情激励 · 高光时刻',   body: '检测到您情绪高涨，系统为您匹配激励类广告——动感品牌，与您同频共振。' },
+  2: { title: '科技未来 · 探索未知',   body: '检测到您好奇心强，系统为您匹配科技类广告——前沿创新，引领未来生活。' },
+  3: { title: '家庭温馨 · 爱的陪伴',   body: '检测到您情绪平和温暖，系统为您匹配家庭类广告——爱的陪伴，温馨每一刻。' },
+};
+
+function triggerAdByCategory(cat) {
+  if (adActive) return;
+  adActive = true; adShowTime = Date.now(); adFeedbackGiven = false;
+  adWindow.classList.add('active');
+  const ad = adCatalog[cat];
+  document.getElementById('adTitle').textContent = ad.title;
+  document.getElementById('adBody').textContent = ad.body;
+  if (document.getElementById('adLikeBtn')) document.getElementById('adLikeBtn').dataset.cat = cat;
+  if (document.getElementById('adSkipBtn')) document.getElementById('adSkipBtn').dataset.cat = cat;
+}
+
+function recordAdFeedback(type) {
+  if (adFeedbackGiven) return;
+  adFeedbackGiven = true;
+  const emotion = Object.entries(smoothEmotions).reduce((a, b) => a[1] > b[1] ? a : b)[0];
+  const reward = computeReward(type, emotion);
+  if (lastStateIdx >= 0 && lastAction >= 0) {
+    updateQ(lastStateIdx, lastAction, reward, discretizeState(smoothEmotions));
+    agentStats.totalReward += reward;
+  }
+  adActive = false;
+  adWindow.classList.remove('active');
+}
+
+function updateAgentUI() {
+  const ed = document.getElementById('agent-decisions');
+  const ee = document.getElementById('agent-epsilon');
+  const er = document.getElementById('agent-reward');
+  const ela = document.getElementById('agent-last-action');
+  if (ed) ed.textContent = agentStats.decisions;
+  if (ee) ee.textContent = (epsilon * 100).toFixed(1) + '%';
+  if (er) er.textContent = agentStats.totalReward.toFixed(1);
+  if (ela) ela.textContent = lastAction >= 0 ? ACTION_LABELS[lastAction] : '--';
+  const stateIdx = discretizeState(smoothEmotions);
+  const qVals = Q[stateIdx];
+  const maxQ = Math.max(...qVals) || 1;
+  const qBarsEl = document.getElementById('qBars');
+  if (qBarsEl) {
+    qBarsEl.innerHTML = ACTION_LABELS.map((label, a) => {
+      const pct = ((qVals[a] / maxQ) * 100).toFixed(1);
+      return `<div class="q-bar-row">
+        <span class="q-bar-label">${label}</span>
+        <div class="q-bar-track"><div class="q-bar-fill" style="width:${pct}%"></div></div>
+        <span>${qVals[a].toFixed(2)}</span>
+      </div>`;
+    }).join('');
+  }
+  const logEl = document.getElementById('agentLog');
+  if (logEl && lastAction >= 0) {
+    const entry = document.createElement('div');
+    entry.className = 'agent-log-entry';
+    entry.textContent = `[${new Date().toLocaleTimeString()}] 状态${stateIdx} | ${ACTION_LABELS[lastAction]} | ε=${(epsilon*100).toFixed(1)}%`;
+    logEl.prepend(entry);
+    while (logEl.children.length > 20) logEl.removeChild(logEl.lastChild);
+  }
+}
+
+// ---- Load face-api.js models ----
+async function loadFaceAPIModels() {
+  try {
+    loadingScreen.classList.remove('hidden');
+    statusLabel.textContent = '加载检测模型中...';
+    loadingFill.style.width = '10%';
+
+    await Promise.all([
+      faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL).then(() => {
+        loadingFill.style.width = '35%';
+        loadingText.textContent = '加载人脸检测模型...';
+      }),
+      faceapi.nets.faceLandmark68TinyNet.loadFromUri(MODEL_URL).then(() => {
+        loadingFill.style.width = '60%';
+        loadingText.textContent = '加载面部特征点模型...';
+      }),
+      faceapi.nets.faceExpressionNet.loadFromUri(MODEL_URL).then(() => {
+        loadingFill.style.width = '85%';
+        loadingText.textContent = '加载情绪分析模型...';
+      }),
+    ]);
+
+    loadingFill.style.width = '100%';
+    loadingText.textContent = '加载完成！';
+    await new Promise(r => setTimeout(r, 400));
+    loadingScreen.classList.add('hidden');
+
+    statusDot.className = 'status-dot ready';
+    statusLabel.textContent = 'face-api.js 模型就绪';
+    document.getElementById('statusText').textContent = '模型已就绪，等待摄像头开启';
+    document.getElementById('statusHint').textContent = '点击下方"开启摄像头"按钮开始实时检测';
+
+  } catch (err) {
+    console.error('Model load error:', err);
+    loadingText.textContent = '加载失败，请检查网络连接';
+    statusDot.className = 'status-dot error';
+    statusLabel.textContent = '模型加载失败';
+    document.getElementById('statusHint').textContent = '请确保网络畅通后刷新页面重试';
+  }
+}
+
+// ---- Start camera ----
+async function startCamera() {
+  if (currentApiMode !== 'local') {
+    alert('请先在右上角选择"face-api.js（本地浏览器）"模式开启摄像头。\n\n切换到云端API模式后，需要配置相应的 API 密钥。');
+    return;
+  }
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: 640, height: 480 } });
+    video.srcObject = stream;
+    await new Promise(r => video.addEventListener('loadedmetadata', r, { once: true }));
+
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    video.style.display = 'block';
+    canvas.style.display = 'block';
+
+    camOverlay.style.display = 'flex';
+    startBtn.style.display = 'none';
+    stopBtn.style.display = 'inline-flex';
+    testBtn.style.display = 'none';
+
+    isRunning = true;
+    detectStartTime = Date.now();
+    recordsThisSession = 0;
+    resetMMSignals();
+    document.getElementById('camLabel').textContent = 'AI 实时分析中...';
+    document.getElementById('statusText').textContent = '正在分析情绪...';
+    document.getElementById('statusHint').textContent = '请保持面部正对摄像头';
+
+    detectInterval = setInterval(detectEmotion, 150);
+  } catch (err) {
+    if (err.name === 'NotAllowedError') {
+      alert('请允许访问摄像头！\n\n在浏览器设置中将该网站的摄像头权限改为"允许"。');
+    } else if (err.name === 'NotFoundError') {
+      alert('未检测到摄像头设备，请确保设备已连接。');
+    }
+  }
+}
+
+// ---- Stop camera ----
+function stopCamera() {
+  isRunning = false;
+  clearInterval(detectInterval);
+  clearInterval(simInterval);
+  if (video.srcObject) {
+    video.srcObject.getTracks().forEach(t => t.stop());
+    video.srcObject = null;
+  }
+  video.style.display = 'none';
+  if (canvas) canvas.style.display = 'none';
+  camOverlay.style.display = 'none';
+  startBtn.style.display = 'inline-flex';
+  stopBtn.style.display = 'none';
+  testBtn.style.display = 'inline-flex';
+  document.getElementById('statusText').textContent = '摄像头已关闭';
+  document.getElementById('statusHint').textContent = '可重新开启摄像头继续检测，或使用"模拟演示"';
+  adWindow.classList.remove('active');
+  adActive = false;
+  relaxedFrames = 0;
+  agentStats = { decisions: 0, exploits: 0, explores: 0, totalReward: 0 };
+  lastStateIdx = -1; lastAction = -1;
+  epsilon = 0.9;
+  loadDBStats();
+}
+
+// ---- Simulated demo (no camera needed) ----
+function startSimulatedMode() {
+  camOverlay.style.display = 'flex';
+  document.getElementById('camLabel').textContent = '模拟演示模式';
+  startBtn.style.display = 'none';
+  stopBtn.style.display = 'inline-flex';
+  testBtn.style.display = 'none';
+  isRunning = true;
+  detectStartTime = Date.now();
+  recordsThisSession = 0;
+  resetMMSignals();
+  document.getElementById('statusText').textContent = '模拟情绪数据流...';
+  document.getElementById('statusHint').textContent = '正在生成模拟情绪数据，已存入数据库';
+
+  const emotions = ['happy', 'surprise', 'neutral', 'sad', 'angry', 'fearful'];
+  const emotionEmojis = { happy: '&#128513;', neutral: '&#128528;', sad: '&#128546;', angry: '&#128545;', fearful: '&#128552;', surprised: '&#128558;' };
+
+  simInterval = setInterval(() => {
+    if (!isRunning) return;
+    const dominant = emotions[Math.floor(Math.random() * emotions.length)];
+    const baseVal = 0.4 + Math.random() * 0.55;
+    const vals = {};
+    emotions.forEach(e => {
+      vals[e] = e === dominant ? baseVal : Math.random() * (1 - baseVal) * 0.4;
+    });
+    const total = Object.values(vals).reduce((a, b) => a + b, 0);
+    Object.keys(vals).forEach(k => vals[k] /= total);
+
+    Object.keys(smoothEmotions).forEach(k => {
+      smoothEmotions[k] = 0.3 * vals[k] + 0.7 * smoothEmotions[k];
+    });
+
+    ['happy', 'surprise', 'neutral', 'sad', 'angry', 'fearful'].forEach(key => {
+      const v = smoothEmotions[key] || 0;
+      document.getElementById('bar-' + key).style.width = (v * 100).toFixed(0) + '%';
+      document.getElementById('val-' + key).textContent = Math.round(v * 100);
+    });
+
+    updateMoodRing(dominant, vals[dominant]);
+    moodHistory.push({ value: vals[dominant], emotion: dominant });
+    if (moodHistory.length > 200) moodHistory.shift();
+    updateMoodTimeline();
+
+    const record = {
+      timestamp: Date.now(),
+      emotions: JSON.parse(JSON.stringify(smoothEmotions)),
+      dominantEmotion: dominant,
+      dominantValue: vals[dominant],
+      source: 'simulate',
+      adTriggered: adActive,
+      gazeRatio: parseFloat(((mmTotalFrames > 0 ? mmGazeOnScreen / mmTotalFrames : 0) * 100).toFixed(1)),
+      lookAwayCount: mmLookAwayCount,
+      pauseCount: mmPauseCount,
+    };
+    addRecord(record);
+    recordsThisSession++;
+
+    // ---- Agent 决策（模拟模式）----
+    const simStateIdx = discretizeState(smoothEmotions);
+    if (adActive) {
+      const elapsed = (Date.now() - adShowTime) / 1000;
+      if (dominant === 'angry') {
+        recordAdFeedback('skip');
+      } else if (dominant === 'happy' && elapsed > 6) {
+        recordAdFeedback('like');
+      }
+    } else {
+      const action = chooseAction(simStateIdx);
+      lastStateIdx = simStateIdx;
+      lastAction = action;
+      agentStats.decisions++;
+      epsilon = Math.max(epsilonMin, epsilon * epsilonDecay);
+      if (action !== 0) {
+        triggerAdByCategory(action - 1);
+      }
+    }
+    if (recordsThisSession % 3 === 0) {
+      updateAgentUI();
+      updateMMPanel();
+      loadDBStats();
+    }
+  }, 300);
+}
+
+// ---- Main detect loop ----
+async function detectEmotion() {
+  if (!isRunning || currentApiMode !== 'local') return;
+
+  // Use Tencent/Baidu API if configured
+  if (currentApiMode === 'tencent' || currentApiMode === 'baidu') {
+    // Placeholder: capture frame and call API
+    return;
+  }
+
+  const options = new faceapi.TinyFaceDetectorOptions({ inputSize: 320, scoreThreshold: 0.5 });
+  const detection = await faceapi
+    .detectSingleFace(video, options)
+    .withFaceLandmarks(true)
+    .withFaceExpressions();
+
+  if (ctx) ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  if (detection) {
+    if (ctx) {
+      const box = detection.detection.box;
+      ctx.strokeStyle = '#ff6b35';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(box.x, box.y, box.width, box.height);
+      const landmarks = detection.landmarks;
+      ctx.fillStyle = '#2d9cdb';
+      landmarks.positions.forEach(pos => {
+        ctx.beginPath();
+        ctx.arc(pos.x, pos.y, 1.5, 0, 2 * Math.PI);
+        ctx.fill();
+      });
+      // 多模态信号采集
+      updateMMSignals(landmarks, box);
+    }
+
+    const expressions = detection.expressions;
+    const alpha = 0.3;
+    Object.keys(smoothEmotions).forEach(k => {
+      smoothEmotions[k] = alpha * expressions[k] + (1 - alpha) * smoothEmotions[k];
+    });
+
+    const pairs = [['happy', smoothEmotions.happy], ['surprise', smoothEmotions.surprise], ['neutral', smoothEmotions.neutral], ['sad', smoothEmotions.sad], ['angry', smoothEmotions.angry], ['fearful', smoothEmotions.fearful]];
+    pairs.forEach(([key, val]) => {
+      const el = document.getElementById('bar-' + key);
+      const vl = document.getElementById('val-' + key);
+      if (el) el.style.width = (val * 100).toFixed(0) + '%';
+      if (vl) vl.textContent = Math.round(val * 100);
+    });
+
+    const dominant = Object.entries(smoothEmotions).reduce((a, b) => a[1] > b[1] ? a : b);
+    updateMoodRing(dominant[0], dominant[1]);
+    moodHistory.push({ value: dominant[1], emotion: dominant[0] });
+    if (moodHistory.length > 200) moodHistory.shift();
+    updateMoodTimeline();
+
+    const record = {
+      timestamp: Date.now(),
+      emotions: JSON.parse(JSON.stringify(smoothEmotions)),
+      dominantEmotion: dominant[0],
+      dominantValue: dominant[1],
+      source: 'face-api.js',
+      adTriggered: adActive,
+      gazeRatio: parseFloat(((mmTotalFrames > 0 ? mmGazeOnScreen / mmTotalFrames : 0) * 100).toFixed(1)),
+      lookAwayCount: mmLookAwayCount,
+      pauseCount: mmPauseCount,
+    };
+    addRecord(record);
+    recordsThisSession++;
+
+    // ---- Agent 决策：替换原来的硬编码规则 ----
+    const stateIdx = discretizeState(smoothEmotions);
+
+    // 广告展示中 → 被动反馈（愤怒立即关闭）
+    if (adActive) {
+      const elapsed = (Date.now() - adShowTime) / 1000;
+      if (dominant[0] === 'angry') {
+        recordAdFeedback('skip');
+      } else if (dominant[0] === 'happy' && elapsed > 6) {
+        recordAdFeedback('like');
+      }
+    } else {
+      // 广告未在展示 → Agent 自主决策
+      const action = chooseAction(stateIdx);
+      lastStateIdx = stateIdx;
+      lastAction = action;
+      agentStats.decisions++;
+      epsilon = Math.max(epsilonMin, epsilon * epsilonDecay);
+
+      if (action !== 0) {
+        triggerAdByCategory(action - 1); // action 1~4 对应广告类别
+      }
+    }
+
+    if (recordsThisSession % 3 === 0) {
+      updateAgentUI();
+      updateMMPanel();
+      loadDBStats();
+    }
+  } else {
+    document.getElementById('statusText').textContent = '未检测到人脸，请正对摄像头';
+    document.getElementById('statusText').style.color = '#ffb800';
+    document.getElementById('moodEmoji').textContent = '&#128533;';
+    document.getElementById('moodLabel').textContent = '无检测';
+    relaxedFrames = 0;
+  }
+}
+
+// ---- Update mood ring ----
+function updateMoodRing(emotion, confidence) {
+  const ring = document.getElementById('moodRing');
+  const emoji = document.getElementById('moodEmoji');
+  const label = document.getElementById('moodLabel');
+  const statusText = document.getElementById('statusText');
+  const statusHint = document.getElementById('statusHint');
+  const conf = Math.round(confidence * 100);
+  const configs = {
+    happy:    { emoji: '&#128513;', label: '开心愉悦', shadow: '#4cc98c', text: '情绪愉悦 · 广告接受度高', hint: '当前最适合推送情感类广告的时机' },
+    neutral:  { emoji: '&#128528;', label: '平静放松', shadow: '#2d9cdb', text: '情绪平静 · 注意力稳定', hint: '心流状态良好，广告干扰感低' },
+    sad:      { emoji: '&#128546;', label: '悲伤低落', shadow: '#9c59ff', text: '情绪低落中', hint: '建议推送温暖治愈类内容' },
+    angry:    { emoji: '&#128545;', label: '愤怒不满', shadow: '#e84e0e', text: '情绪激动中 · 请勿插入广告', hint: '此时插入广告会严重损害用户体验' },
+    fearful:  { emoji: '&#128552;', label: '恐惧紧张', shadow: '#ffb800', text: '情绪紧张中', hint: '适合推送安心舒缓类内容' },
+    surprised:{ emoji: '&#128558;', label: '惊讶意外', shadow: '#ff6b35', text: '情绪惊讶 · 注意力峰值', hint: '高关注度，但情绪波动大' },
+  };
+  const cfg = configs[emotion] || configs.neutral;
+  const glowSize = 5 + conf * 0.35;
+  emoji.textContent = cfg.emoji;
+  label.textContent = cfg.label + ' ' + conf + '%';
+  ring.style.boxShadow = `0 0 0px ${glowSize}px ${cfg.shadow}33`;
+  statusText.textContent = cfg.text;
+  statusText.style.color = cfg.shadow;
+  statusText.style.color = '';
+  statusHint.textContent = cfg.hint;
+}
+
+// ---- Update mood timeline ----
+function updateMoodTimeline() {
+  const container = document.getElementById('moodTimeline');
+  if (moodHistory.length < 2) return;
+  const step = Math.max(1, Math.floor(moodHistory.length / 60));
+  const samples = moodHistory.filter((_, i) => i % step === 0).slice(-60);
+  const colors = { happy: '#4cc98c', neutral: '#2d9cdb', sad: '#9c59ff', angry: '#e84e0e', fearful: '#ffb800', surprised: '#ff6b35' };
+  container.innerHTML = samples.map(s => {
+    const h = Math.max(s.value * 100, 4);
+    const c = colors[s.emotion] || '#4cc98c';
+    return `<div class="mood-bar" style="height:${h}px;background:${c};opacity:${0.4 + s.value * 0.5}"></div>`;
+  }).join('');
+}
+
+// ---- Trigger ad window ----
+function triggerAdWindow() {
+  if (adWindow.classList.contains('active')) return;
+  adWindow.classList.add('active');
+  const ads = [
+    { title: '情绪最松弛 · 广告最佳时机', body: '检测到您当前情绪状态放松愉悦，正在为您呈现情感匹配类广告——温暖治愈品牌，贴心不打扰。' },
+    { title: '心流状态 · 广告窗口开启', body: '您已进入深度观剧心流，情绪稳定放松。系统正在为您匹配与当前情感基调一致的品牌内容。' },
+    { title: '精准触达 · 情绪价值最大化', body: 'AI 已识别您的情绪状态为"愉悦放松"。同情感类型的广告已准备就绪，接受度提升约 3 倍。' },
+  ];
+  const ad = ads[Math.floor(Math.random() * ads.length)];
+  document.getElementById('adTitle').textContent = ad.title;
+  document.getElementById('adBody').textContent = ad.body;
+}
+
+// ==================== INIT ====================
+(async () => {
+  await initDB();
+  await switchApiMode('local');
+  loadDBStats();
+})();
+</script>
+
+</body>
+</html>
